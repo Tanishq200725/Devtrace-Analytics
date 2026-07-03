@@ -1,0 +1,146 @@
+/* Base Styling and CSS Variables (Vercel & Stripe Inspired Dark Palette) */
+:root {
+  --background: 240 10% 3.9%;   /* Deep black/gray */
+  --foreground: 0 0% 98%;       /* Crisp white/light gray */
+  --card: 240 10% 5.9%;         /* Card backgrounds */
+  --border: 240 5.9% 15%;       /* Subdued gray borders */
+  --accent: 250 84% 54%;        /* Electric Indigo */
+  --accent-muted: 250 84% 75%;  /* Light Indigo */
+}
+
+/* Themes variable overrides */
+html.theme-vercel {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 5.9%;
+  --border: 240 5.9% 15%;
+  --accent: 250 84% 54%;
+  --accent-muted: 250 84% 75%;
+}
+
+html.theme-dracula {
+  --background: 231 15% 18%; /* Dracula gray */
+  --foreground: 60 30% 96%;  /* Off-white */
+  --card: 231 15% 24%;
+  --border: 231 15% 32%;
+  --accent: 326 100% 74%;   /* Dracula pink/purple */
+  --accent-muted: 31 100% 71%; /* Dracula orange */
+}
+
+html.theme-matrix {
+  --background: 120 100% 1.5%; /* Jet black green */
+  --foreground: 120 100% 50%;  /* bright Matrix green */
+  --card: 120 100% 3%;
+  --border: 120 100% 10%;
+  --accent: 120 100% 45%;
+  --accent-muted: 120 100% 25%;
+}
+
+html.theme-cyberpunk {
+  --background: 324 20% 5%; /* neon dark base */
+  --foreground: 180 100% 90%;
+  --card: 324 20% 8%;
+  --border: 324 20% 18%;
+  --accent: 324 100% 58%; /* neon pink */
+  --accent-muted: 180 100% 50%; /* neon cyan */
+}
+
+html.theme-stripe {
+  --background: 220 30% 6%; /* Cobalt navy base */
+  --foreground: 210 20% 95%;
+  --card: 220 30% 9%;
+  --border: 220 30% 16%;
+  --accent: 210 100% 50%; /* bright Stripe blue/cyan */
+  --accent-muted: 250 80% 65%; /* violet */
+}
+
+/* Base resets & styling */
+html, body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(240 5.9% 25%);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(15, 15, 20, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border));
+}
+
+/* Smooth transitions */
+.transition-all-300 {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pulse animation adjustments */
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4), 0 0 30px rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.7), 0 0 50px rgba(99, 102, 241, 0.4);
+    border-color: rgba(129, 140, 248, 1);
+  }
+}
+
+.radar-pulse {
+  animation: neonPulse 3s infinite alternate;
+}
+
+/* Code highlight decoration custom line classes for Monaco editor */
+.monaco-line-addition {
+  background-color: rgba(16, 185, 129, 0.15) !important; /* light green tint */
+  border-left: 3px solid #10b981 !important;
+}
+.monaco-line-deletion {
+  background-color: rgba(239, 68, 68, 0.15) !important; /* light red tint */
+  border-left: 3px solid #ef4444 !important;
+}
+.monaco-line-modification {
+  background-color: rgba(245, 158, 11, 0.15) !important; /* light yellow tint */
+  border-left: 3px solid #f59e0b !important;
+}
+
+/* Animation utilities for route fading */
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom animation duration utility overrides */
+.duration-3000 {
+  animation-duration: 3s !important;
+}
+.duration-10000 {
+  animation-duration: 10s !important;
+}
+

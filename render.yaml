@@ -1,0 +1,31 @@
+services:
+  # 1. DevTrace Backend API Web Service
+  - type: web
+    name: devtrace-api-service
+    env: node
+    plan: free
+    buildCommand: npm install && npx tsc
+    startCommand: node dist/server.js
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: SUPABASE_URL
+        sync: false # Set in Render UI dashboard
+      - key: SUPABASE_KEY
+        sync: false # Set in Render UI dashboard
+
+  # 2. DevTrace Frontend Static Website
+  - type: static
+    name: devtrace-frontend
+    env: static
+    plan: free
+    publishPath: ./client
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: max-age=31536000
+    routes:
+      # Rewrites SPA routing paths back to index.html for client router
+      - type: rewrite
+        source: /*
+        destination: /index.html

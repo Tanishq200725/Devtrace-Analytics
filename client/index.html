@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" class="dark h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTrace — High-Performance Git Forensics</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            border: 'hsl(var(--border))',
+            background: 'hsl(var(--background))',
+            foreground: 'hsl(var(--foreground))',
+            card: 'hsl(var(--card))',
+            accent: {
+              DEFAULT: 'hsl(var(--accent))',
+              muted: 'hsl(var(--accent-muted))',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Core Design System Styles -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-background text-foreground font-sans antialiased h-full flex flex-col selection:bg-accent/20 selection:text-accent">
+
+  <!-- Header Navigation -->
+  <header class="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <!-- Logo / Title -->
+      <div class="flex items-center gap-3">
+        <a href="/dashboard" class="flex items-center gap-3 group focus:outline-none" data-link>
+          <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-accent to-accent-muted flex items-center justify-center shadow-lg shadow-accent/15 group-hover:scale-105 transition-transform duration-300">
+            <svg class="w-4 h-4 text-background stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+          <span class="text-lg font-semibold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent group-hover:to-white transition-all duration-300">DevTrace</span>
+        </a>
+        <button id="admin-dashboard-btn" class="hidden h-7 w-7 rounded bg-neutral-900 border border-border/80 text-gray-500 hover:text-white flex items-center justify-center transition-colors focus:outline-none" onclick="window.openAdminPanel();" title="Owner Admin Control Center">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Main Navigation Links (Hidden on /auth) -->
+      <nav id="nav-links" class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
+        <a href="/dashboard" class="hover:text-white transition-colors duration-200" data-link>Dashboard</a>
+        <a href="/workspace/diff" class="hover:text-white transition-colors duration-200" data-link>Workspace</a>
+        <a href="/pricing" class="hover:text-white transition-colors duration-200" data-link>Membership</a>
+        <a href="/support" class="hover:text-white transition-colors duration-200" data-link>Support</a>
+        <a href="/support?tab=suggestion" class="hover:text-white transition-colors duration-200" data-link>Suggestions</a>
+      </nav>
+
+      <!-- Connection Status indicator -->
+      <div class="flex items-center gap-4">
+        <!-- Visual Theme Selection -->
+        <div id="theme-selector-container" class="hidden relative">
+          <select id="theme-selector" onchange="window.setTheme(this.value)" class="bg-neutral-900 border border-border text-xs text-gray-300 font-mono rounded-lg px-2.5 py-1.5 focus:border-accent outline-none cursor-pointer">
+            <option value="vercel">Vercel (Free)</option>
+            <option value="dracula">Dracula (Free)</option>
+            <option value="matrix">Matrix (Basic+)</option>
+            <option value="cyberpunk">Cyberpunk (Adv+)</option>
+            <option value="stripe">Stripe (Elite+)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Engine Online</span>
+        </div>
+        <button id="auth-nav-btn" class="text-sm font-medium px-4 py-1.5 rounded-lg border border-border bg-card hover:bg-neutral-800 hover:border-gray-700 transition-all duration-200" onclick="window.router.navigate('/auth')">
+          Authorize
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Viewport Shell -->
+  <main id="app-root" class="flex-grow flex flex-col relative w-full overflow-hidden">
+    <!-- Component views will render here asynchronously -->
+    <div class="flex-grow flex items-center justify-center">
+      <div class="flex flex-col items-center gap-3">
+        <div class="h-6 w-6 rounded-full border-2 border-accent border-t-transparent animate-spin"></div>
+        <p class="text-xs text-gray-400 tracking-widest uppercase animate-pulse">Booting Engine...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Persistent Elite Signature Footer -->
+  <footer class="w-full border-t border-border bg-neutral-950/60 py-5 text-center text-xs text-gray-500 tracking-wider">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>Engineered by <span class="text-gray-300 font-medium">Tanishq Tyagi</span> | Cloud & DevOps Infrastructure</p>
+      <p class="text-[10px] text-gray-600 uppercase">DevTrace © 2026</p>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- PERSISTENT FLOATING AI CHAT ASSISTANT     -->
+  <!-- ========================================== -->
+  
+  <!-- Floating bubble button -->
+  <button id="chat-bubble" class="hidden fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full bg-accent hover:bg-opacity-90 active:scale-95 text-white shadow-2xl shadow-accent/30 flex items-center justify-center transition-all duration-300 transform translate-y-0 hover:-translate-y-1">
+    <!-- Chat Icon -->
+    <svg class="w-6 h-6 stroke-[2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-1.399 2.901a14.59 14.59 0 01-.817-.168l-2.457 2.457A.75.75 0 017.5 15v-1.808c-.792-.083-1.572-.267-2.316-.549a10.5 10.5 0 01-1.637-1.258C2.114 9.945 1.5 8.04 1.5 6a7.5 7.5 0 0115 0c0 2.04-.614 3.945-2.047 5.385a10.455 10.455 0 01-1.637 1.258 14.586 14.586 0 01-1.399.168z" />
+    </svg>
+    <!-- Counter badge if any -->
+    <span id="chat-bubble-counter" class="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-rose-500 border border-neutral-950 text-[9px] font-bold text-white flex items-center justify-center">5</span>
+  </button>
+
+  <!-- Expanded Chat panel window -->
+  <div id="chat-assistant-window" class="hidden fixed bottom-24 right-6 z-50 w-full max-w-sm bg-neutral-950 border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col glass duration-300 select-none animate-fadeIn">
+    <!-- Header -->
+    <div class="p-4 border-b border-border/80 flex items-center justify-between bg-neutral-950/60">
+      <div class="flex items-center gap-2">
+        <div class="h-2 w-2 rounded-full bg-accent animate-pulse"></div>
+        <div>
+          <h4 class="text-xs font-bold text-white font-mono uppercase tracking-wider">DevTrace Copilot</h4>
+          <span class="text-[9px] text-gray-500 font-mono" id="chat-credits-label">Free Queries: 5/5 remaining</span>
+        </div>
+      </div>
+      <button onclick="window.toggleChatAssistant()" class="text-gray-500 hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Message Logs -->
+    <div class="flex-grow p-4 space-y-3 h-80 overflow-y-auto" id="chat-messages-container">
+      <!-- Bot welcome message -->
+      <div class="flex gap-2.5">
+        <div class="h-6 w-6 rounded bg-accent/15 border border-accent/30 text-accent text-[9px] font-mono font-bold flex items-center justify-center flex-shrink-0 mt-0.5">AI</div>
+        <div class="p-3 rounded-2xl bg-neutral-900 border border-border/40 text-xs text-gray-300 max-w-[80%] leading-relaxed font-mono">
+          Hello! I am your DevTrace AI Assistant. I can help you use visual themes, timeline commit scrubbers, search diagnostics, suggestions logs, or billing details. Ask me anything!
+        </div>
+      </div>
+    </div>
+
+    <!-- User Input Panel -->
+    <form id="chat-input-form" class="p-3 border-t border-border/80 flex items-center gap-2" onsubmit="event.preventDefault(); window.sendChatMessage();">
+      <input type="text" id="chat-input-text" placeholder="Type a message..." required autocomplete="off"
+        class="flex-grow bg-neutral-900 border border-border rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 font-mono transition-all outline-none focus:border-accent" />
+      <button type="submit" id="chat-send-btn" class="h-9 w-9 rounded-xl bg-accent text-white hover:bg-opacity-90 flex items-center justify-center active:scale-95 transition-all">
+        <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- Chat Script logic -->
+  <script>
+    // Open/Close chat pane
+    window.toggleChatAssistant = () => {
+      const windowPanel = document.getElementById('chat-assistant-window');
+      if (windowPanel) {
+        windowPanel.classList.toggle('hidden');
+        if (!windowPanel.classList.contains('hidden')) {
+          setTimeout(() => {
+            const container = document.getElementById('chat-messages-container');
+            if (container) container.scrollTop = container.scrollHeight;
+            document.getElementById('chat-input-text').focus();
+          }, 100);
+        }
+      }
+    };
+
+    // Attach click handler to bubble
+    const bubbleBtn = document.getElementById('chat-bubble');
+    if (bubbleBtn) {
+      bubbleBtn.addEventListener('click', window.toggleChatAssistant);
+    }
+
+    // Refresh remaining credits labels
+    const syncChatLimitBadge = () => {
+      const auth = localStorage.getItem('devtrace_auth') ? JSON.parse(localStorage.getItem('devtrace_auth')) : null;
+      const counter = document.getElementById('chat-bubble-counter');
+      const label = document.getElementById('chat-credits-label');
+
+      if (!auth || !auth.authorized) {
+        if (bubbleBtn) bubbleBtn.classList.add('hidden');
+        return;
+      }
+
+      const membership = auth.membership || 'free';
+      const remaining = typeof auth.chat_queries_remaining === 'number' ? auth.chat_queries_remaining : 5;
+
+      if (membership === 'free') {
+        if (counter) {
+          counter.textContent = remaining;
+          counter.classList.remove('hidden');
+        }
+        if (label) label.textContent = `Free Queries: ${remaining}/5 remaining`;
+      } else {
+        if (counter) counter.classList.add('hidden');
+        if (label) label.textContent = `${membership.toUpperCase()} Plan (Unlimited)`;
+      }
+    };
+
+    // Send User Message
+    window.sendChatMessage = async () => {
+      const input = document.getElementById('chat-input-text');
+      const sendBtn = document.getElementById('chat-send-btn');
+      const container = document.getElementById('chat-messages-container');
+
+      if (!input || !sendBtn || !container) return;
+
+      const auth = localStorage.getItem('devtrace_auth') ? JSON.parse(localStorage.getItem('devtrace_auth')) : null;
+      if (!auth || !auth.authorized) {
+        alert("Session unauthorized. Please log in first.");
+        return;
+      }
+
+      const message = input.value.trim();
+      if (!message) return;
+
+      // Append user bubble
+      appendMessageBubble('user', message);
+      input.value = '';
+      input.focus();
+
+      // Disable inputs while loading
+      input.disabled = true;
+      sendBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/assistant/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message,
+            identifier: auth.identifier
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to communicate with AI Assistant.');
+        }
+
+        // Append bot reply
+        appendMessageBubble('bot', data.reply);
+
+        // Update credits
+        if (typeof data.chat_queries_remaining === 'number') {
+          auth.chat_queries_remaining = data.chat_queries_remaining;
+          localStorage.setItem('devtrace_auth', JSON.stringify(auth));
+          syncChatLimitBadge();
+        }
+
+      } catch (err) {
+        appendMessageBubble('bot', `Error: ${err.message}`);
+      } finally {
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
+        container.scrollTop = container.scrollHeight;
+      }
+    };
+
+    // Helper to append chat message bubble in log window
+    const appendMessageBubble = (sender, text) => {
+      const container = document.getElementById('chat-messages-container');
+      if (!container) return;
+
+      const isBot = sender === 'bot';
+      const bubble = document.createElement('div');
+      bubble.className = "flex gap-2.5 " + (isBot ? "" : "flex-row-reverse");
+
+      const icon = document.createElement('div');
+      icon.className = "h-6 w-6 rounded-[8px] flex items-center justify-center flex-shrink-0 mt-0.5 text-[9px] font-mono font-bold select-none " + 
+        (isBot ? "bg-accent/15 border border-accent/30 text-accent" : "bg-neutral-800 border border-border/80 text-gray-400");
+      icon.textContent = isBot ? "AI" : "ME";
+
+      const content = document.createElement('div');
+      content.className = "p-3 rounded-2xl text-xs max-w-[80%] leading-relaxed font-mono " +
+        (isBot ? "bg-neutral-900 border border-border/40 text-gray-300" : "bg-accent text-white shadow-md shadow-accent/15");
+      content.textContent = text;
+
+      bubble.appendChild(icon);
+      bubble.appendChild(content);
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+    };
+
+    // Open Admin Dashboard Panel
+    window.openAdminPanel = async () => {
+      const auth = localStorage.getItem('devtrace_auth') ? JSON.parse(localStorage.getItem('devtrace_auth')) : null;
+      if (!auth || !auth.authorized) return;
+
+      const panel = document.getElementById('owner-admin-panel');
+      if (panel) {
+        panel.classList.remove('hidden');
+        
+        // Fetch stats
+        try {
+          const res = await fetch(`/api/admin/stats?identifier=${encodeURIComponent(auth.identifier)}`);
+          if (!res.ok) throw new Error("Could not retrieve statistics.");
+          const data = await res.json();
+
+          // Populate stats
+          document.getElementById('admin-metric-users').textContent = data.totalUsers;
+          document.getElementById('admin-metric-scans').textContent = data.scannedReposCount;
+          document.getElementById('admin-metric-tickets-count').textContent = data.tickets.length;
+
+          document.getElementById('admin-plan-free').textContent = data.plans.free || 0;
+          document.getElementById('admin-plan-basic').textContent = data.plans.basic || 0;
+          document.getElementById('admin-plan-advanced').textContent = data.plans.advanced || 0;
+          document.getElementById('admin-plan-elite').textContent = data.plans.elite || 0;
+
+          // Render support tickets
+          const ticketsTable = document.getElementById('admin-tickets-table-body');
+          if (ticketsTable) {
+            if (data.tickets.length === 0) {
+              ticketsTable.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">No support tickets registered on cloud table database yet.</td></tr>`;
+            } else {
+              ticketsTable.innerHTML = data.tickets.map(t => `
+                <tr class="hover:bg-neutral-900/60 transition-colors">
+                  <td class="p-3 text-[11px] font-semibold text-gray-300 truncate max-w-[120px]">${t.email || t.identifier || 'anonymous'}</td>
+                  <td class="p-3">
+                    <p class="font-medium text-white text-[11px]">${t.subject || 'No Subject'}</p>
+                    <p class="text-[10px] text-gray-500 mt-0.5 truncate max-w-[280px]">${t.description || ''}</p>
+                    ${t.telemetry && t.telemetry.agent ? `<details class="mt-1 text-[9px] text-accent-muted"><summary class="cursor-pointer hover:underline">View Telemetry Diagnostics</summary><pre class="p-2 mt-1 rounded bg-neutral-950 border border-border/80 overflow-x-auto text-gray-400 font-sans">${JSON.stringify(t.telemetry, null, 2)}</pre></details>` : ''}
+                  </td>
+                  <td class="p-3 text-[10px] text-gray-500">${new Date(t.created_at || Date.now()).toLocaleDateString()}</td>
+                </tr>
+              `).join('');
+            }
+          }
+
+          // Render suggestions
+          const suggContainer = document.getElementById('admin-suggestions-feed-container');
+          if (suggContainer) {
+            if (data.suggestions.length === 0) {
+              suggContainer.innerHTML = `<div class="p-4 text-center text-gray-500 border border-border rounded-xl bg-card text-xs font-mono">No suggestions logged inside suggestions logs directory.</div>`;
+            } else {
+              suggContainer.innerHTML = data.suggestions.map(s => `
+                <div class="p-4 rounded-xl border border-border bg-card/40 space-y-2">
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="font-bold text-accent">${s.email || 'anonymous'}</span>
+                    <span class="text-gray-500">${new Date(s.date || Date.now()).toLocaleString()}</span>
+                  </div>
+                  <p class="text-xs text-gray-300 font-mono italic leading-relaxed">"${s.suggestion || s.query || ''}"</p>
+                </div>
+              `).join('');
+            }
+          }
+
+        } catch (err) {
+          alert(`Stats Load Failed: ${err.message}`);
+        }
+      }
+    };
+
+    window.closeAdminPanel = () => {
+      const panel = document.getElementById('owner-admin-panel');
+      if (panel) panel.classList.add('hidden');
+    };
+
+    // Register visibility checks into global router updates hook
+    window.onRouteChanged = () => {
+      const path = window.location.pathname;
+      
+      // Credit guards: Show AI Chat Credits Bubble ONLY on Dashboard and Support/Suggestions
+      const isAllowedPageForCredits = path === '/dashboard' || path === '/support';
+      
+      const auth = localStorage.getItem('devtrace_auth') ? JSON.parse(localStorage.getItem('devtrace_auth')) : null;
+      const isLoggedIn = auth && auth.authorized;
+
+      if (!isAllowedPageForCredits || !isLoggedIn) {
+        if (bubbleBtn) bubbleBtn.classList.add('hidden');
+        document.getElementById('chat-assistant-window').classList.add('hidden');
+      } else {
+        if (bubbleBtn) {
+          bubbleBtn.classList.remove('hidden');
+          syncChatLimitBadge();
+        }
+      }
+
+      // Owner Bypass visibility: Show admin settings icon next to logo ONLY for owner Tanishq
+      const adminBtn = document.getElementById('admin-dashboard-btn');
+      if (adminBtn) {
+        if (isLoggedIn && (auth.identifier.toLowerCase() === 'tanishq' || auth.identifier.toLowerCase() === 'tanishq@gmail.com' || auth.username.toLowerCase() === 'tanishq')) {
+          adminBtn.classList.remove('hidden');
+        } else {
+          adminBtn.classList.add('hidden');
+        }
+      }
+    };
+
+    // Run initial hook checks
+    setTimeout(window.onRouteChanged, 300);
+  </script>
+
+  <!-- ========================================== -->
+  <!-- SECURE OWNER ADMIN DASHBOARD OVERLAY      -->
+  <!-- ========================================== -->
+  <div id="owner-admin-panel" class="hidden fixed inset-0 z-50 overflow-hidden select-none animate-fadeIn">
+    <!-- Backdrop overlay -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="window.closeAdminPanel()"></div>
+    
+    <!-- Slide-over panel -->
+    <div class="absolute inset-y-0 right-0 max-w-2xl w-full bg-neutral-950 border-l border-border shadow-2xl flex flex-col glass animate-slideIn">
+      <!-- Header -->
+      <div class="p-6 border-b border-border/80 flex items-center justify-between bg-neutral-950/60">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-lg bg-accent/15 border border-accent/30 text-accent flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white font-mono uppercase tracking-wider">Owner Control Center</h3>
+            <p class="text-[10px] text-gray-500 font-mono">DevTrace Platform Diagnostics & Telemetry Dashboard</p>
+          </div>
+        </div>
+        <button onclick="window.closeAdminPanel()" class="h-8 w-8 rounded-lg border border-border bg-card hover:bg-neutral-900 text-gray-400 hover:text-white flex items-center justify-center transition-all duration-200">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrollable metrics content -->
+      <div class="flex-grow p-6 overflow-y-auto space-y-6">
+        <!-- Grid: Metrics summary cards -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl border border-border bg-card/50">
+            <span class="text-[10px] text-gray-500 font-mono uppercase">Total Users</span>
+            <p class="text-2xl font-bold text-white mt-1" id="admin-metric-users">0</p>
+          </div>
+          <div class="p-4 rounded-xl border border-border bg-card/50">
+            <span class="text-[10px] text-gray-500 font-mono uppercase">Excavated Repos</span>
+            <p class="text-2xl font-bold text-white mt-1" id="admin-metric-scans">0</p>
+          </div>
+          <div class="p-4 rounded-xl border border-border bg-card/50">
+            <span class="text-[10px] text-gray-500 font-mono uppercase">Active Issues</span>
+            <p class="text-2xl font-bold text-white mt-1 text-rose-400" id="admin-metric-tickets-count">0</p>
+          </div>
+        </div>
+
+        <!-- Plan distribution breakdown list -->
+        <div class="p-4 rounded-xl border border-border bg-card/30 space-y-3">
+          <h4 class="text-xs font-bold text-gray-300 font-mono uppercase">Membership Distribution</h4>
+          <div class="grid grid-cols-4 gap-2 text-center text-xs font-mono">
+            <div class="p-2 bg-neutral-900/60 rounded border border-border/40">
+              <span class="text-gray-500 text-[10px]">Free</span>
+              <p class="text-white font-bold mt-0.5" id="admin-plan-free">0</p>
+            </div>
+            <div class="p-2 bg-neutral-900/60 rounded border border-border/40">
+              <span class="text-accent text-[10px]">Basic</span>
+              <p class="text-white font-bold mt-0.5" id="admin-plan-basic">0</p>
+            </div>
+            <div class="p-2 bg-neutral-900/60 rounded border border-border/40">
+              <span class="text-emerald-400 text-[10px]">Advanced</span>
+              <p class="text-white font-bold mt-0.5" id="admin-plan-advanced">0</p>
+            </div>
+            <div class="p-2 bg-neutral-900/60 rounded border border-border/40">
+              <span class="text-violet-400 text-[10px]">Elite</span>
+              <p class="text-white font-bold mt-0.5" id="admin-plan-elite">0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Active Support Tickets (Errors people face) -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-gray-300 font-mono uppercase">Active Error Traces & Bug Reports</h4>
+          <div class="border border-border rounded-xl bg-card overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs font-mono">
+                <thead>
+                  <tr class="border-b border-border bg-neutral-900 text-gray-400 text-[10px]">
+                    <th class="p-3">User/Sender</th>
+                    <th class="p-3">Subject / Issue Description</th>
+                    <th class="p-3">Date</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-tickets-table-body" class="divide-y divide-border/60 text-gray-300">
+                  <tr>
+                    <td colspan="3" class="p-4 text-center text-gray-500">No support tickets registered on cloud table database yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Advice suggestions feed -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-gray-300 font-mono uppercase">User Suggestions & Advices</h4>
+          <div class="space-y-3" id="admin-suggestions-feed-container">
+            <div class="p-4 text-center text-gray-500 border border-border rounded-xl bg-card text-xs font-mono">
+              No suggestions logged inside suggestions logs directory.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Routing Engine -->
+  <script type="module" src="/router.js"></script>
+</body>
+</html>
