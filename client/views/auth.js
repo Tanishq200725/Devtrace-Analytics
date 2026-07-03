@@ -104,7 +104,7 @@ export default {
               <div id="signup-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
 
               <button type="submit" id="signup-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
-                <span>Dispatch Verification OTP</span>
+                <span>Continue to Profile Setup</span>
                 <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
@@ -114,44 +114,7 @@ export default {
         </div>
 
         <!-- ========================================== -->
-        <!-- PANEL 2: REGISTRATION OTP VERIFICATION     -->
-        <!-- ========================================== -->
-        <div id="auth-otp-panel" class="hidden space-y-6 animate-fadeIn">
-          <div class="text-center">
-            <div class="h-11 w-11 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 mx-auto flex items-center justify-center mb-3">
-              <svg class="w-5.5 h-5.5 stroke-[1.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A4 4 0 0111.897 3h.206a4 4 0 014.033 3.79l.067 1.344a1 1 0 00.278.68l.966.966a4 4 0 010 5.656l-.966.966a1 1 0 00-.278.68l-.067 1.344a4 4 0 01-4.033 3.79h-.206a4 4 0 01-4.033-3.79l-.067-1.344a1 1 0 00-.278-.68l-.966-.966a4 4 0 010-5.656l.966-.966a1 1 0 00.278-.68l.067-1.344z" />
-              </svg>
-            </div>
-            <h2 class="text-2xl font-bold tracking-tight text-white">Verify Access Key</h2>
-            <p class="text-gray-400 text-xs mt-1.5 font-mono" id="otp-subheader-label">ENTER THE 6-DIGIT PASSCODE SENT TO YOUR CONSOLE</p>
-          </div>
-
-          <!-- Dynamic OTP Digit Blocks -->
-          <div class="flex justify-between gap-2 max-w-xs mx-auto" id="otp-input-group">
-            <input type="text" maxlength="1" pattern="[0-9]" class="otp-box w-12 h-12 bg-neutral-950 border border-border rounded-xl text-center text-lg font-bold text-white transition-all focus:border-accent outline-none focus:ring-1 focus:ring-accent font-mono" />
-            <input type="text" maxlength="1" pattern="[0-9]" class="otp-box w-12 h-12 bg-neutral-950 border border-border rounded-xl text-center text-lg font-bold text-white transition-all focus:border-accent outline-none focus:ring-1 focus:ring-accent font-mono" />
-            <input type="text" maxlength="1" pattern="[0-9]" class="otp-box w-12 h-12 bg-neutral-950 border border-border rounded-xl text-center text-lg font-bold text-white transition-all focus:border-accent outline-none focus:ring-1 focus:ring-accent font-mono" />
-            <input type="text" maxlength="1" pattern="[0-9]" class="otp-box w-12 h-12 bg-neutral-950 border border-border rounded-xl text-center text-lg font-bold text-white transition-all focus:border-accent outline-none focus:ring-1 focus:ring-accent font-mono" />
-            <input type="text" maxlength="1" pattern="[0-9]" class="otp-box w-12 h-12 bg-neutral-950 border border-border rounded-xl text-center text-lg font-bold text-white transition-all focus:border-accent outline-none focus:ring-1 focus:ring-accent font-mono" />
-            <input type="text" maxlength="1" pattern="[0-9]" class="otp-box w-12 h-12 bg-neutral-950 border border-border rounded-xl text-center text-lg font-bold text-white transition-all focus:border-accent outline-none focus:ring-1 focus:ring-accent font-mono" />
-          </div>
-
-          <div id="otp-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
-
-          <button id="otp-verify-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
-            Confirm Access Key
-          </button>
-
-          <div class="text-center">
-            <button onclick="window.backToAuth()" class="text-xs font-mono text-gray-500 hover:text-white transition-colors duration-200">
-              ← Return to Registration
-            </button>
-          </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- PANEL 3: CHOOSE USERNAME & PASSWORD POST-OTP-->
+        <!-- PANEL 2: CHOOSE USERNAME & PASSWORD POST-OTP-->
         <!-- ========================================== -->
         <div id="auth-username-panel" class="hidden space-y-6 animate-fadeIn">
           <div class="text-center">
@@ -194,7 +157,7 @@ export default {
         </div>
 
         <!-- ========================================== -->
-        <!-- PANEL 4: FORGOT PASSWORD EMAIL ENTRY       -->
+        <!-- PANEL 3: FORGOT PASSWORD EMAIL ENTRY       -->
         <!-- ========================================== -->
         <div id="auth-forgot-panel" class="hidden space-y-6 animate-fadeIn">
           <div class="text-center">
@@ -229,7 +192,7 @@ export default {
         </div>
 
         <!-- ========================================== -->
-        <!-- PANEL 5: RECOVERY OTP VERIFICATION         -->
+        <!-- PANEL 4: RECOVERY OTP VERIFICATION         -->
         <!-- ========================================== -->
         <div id="auth-recovery-panel" class="hidden space-y-6 animate-fadeIn">
           <div class="text-center">
@@ -282,7 +245,6 @@ export default {
     let currentRecoveryEmail = '';
 
     const mainPanel = document.getElementById('auth-main-panel');
-    const otpPanel = document.getElementById('auth-otp-panel');
     const usernamePanel = document.getElementById('auth-username-panel');
     const forgotPanel = document.getElementById('auth-forgot-panel');
     const recoveryPanel = document.getElementById('auth-recovery-panel');
@@ -297,10 +259,6 @@ export default {
     const signupAlert = document.getElementById('signup-alert');
     const loginSubmitBtn = document.getElementById('auth-submit-btn');
     const signupSubmitBtn = document.getElementById('signup-submit-btn');
-
-    const otpAlert = document.getElementById('otp-alert');
-    const otpVerifyBtn = document.getElementById('otp-verify-btn');
-    const otpBoxes = Array.from(document.querySelectorAll('.otp-box'));
 
     const recoveryAlert = document.getElementById('recovery-alert');
     const recoveryVerifyBtn = document.getElementById('recovery-verify-btn');
@@ -345,7 +303,6 @@ export default {
       activeTab = tab;
       loginAlert.classList.add('hidden');
       signupAlert.classList.add('hidden');
-      otpAlert.classList.add('hidden');
       recoveryAlert.classList.add('hidden');
 
       const tabLogin = document.getElementById('tab-login');
@@ -353,7 +310,6 @@ export default {
 
       // Hide all panels
       mainPanel.classList.add('hidden');
-      otpPanel.classList.add('hidden');
       usernamePanel.classList.add('hidden');
       forgotPanel.classList.add('hidden');
       recoveryPanel.classList.add('hidden');
@@ -385,7 +341,6 @@ export default {
     // Return to main gateway page
     window.backToAuth = () => {
       window.switchTab('signup');
-      otpBoxes.forEach(box => box.value = '');
       recoveryBoxes.forEach(box => box.value = '');
     };
 
@@ -445,7 +400,7 @@ export default {
         loginAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
         loginAlert.innerHTML = `
           <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div>
             <p class="font-medium">Authentication Failed</p>
@@ -464,160 +419,56 @@ export default {
       }
     });
 
-    // FORM 2: SIGNUP SUBMIT HANDLER (OTP Dispatch only, no password yet)
+    // FORM 2: SIGNUP SUBMIT HANDLER (Direct redirection to Username + Password setup)
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       let identifier = '';
       if (signupMode === 'gmail') {
         identifier = document.getElementById('signup-email').value.trim();
+        if (!identifier.includes('@')) {
+          signupAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
+          signupAlert.innerHTML = `<div><p class="font-medium">Invalid Email</p><p class="text-[11px] mt-0.5">Please enter a valid Gmail address.</p></div>`;
+          signupAlert.classList.remove('hidden');
+          return;
+        }
       } else {
         const countryCode = document.getElementById('signup-country-code').value;
         const phone = document.getElementById('signup-phone').value.trim();
+        if (!/^[0-9]{10,14}$/.test(phone)) {
+          signupAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
+          signupAlert.innerHTML = `<div><p class="font-medium">Invalid Phone</p><p class="text-[11px] mt-0.5">Please enter a valid 10-digit mobile number.</p></div>`;
+          signupAlert.classList.remove('hidden');
+          return;
+        }
         identifier = `${countryCode}${phone}`;
       }
 
       signupAlert.classList.add('hidden');
       signupSubmitBtn.disabled = true;
-      signupSubmitBtn.innerHTML = `
-        <span class="h-3 w-3 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-        <span>Dispatching Verification OTP...</span>
-      `;
+      signupSubmitBtn.innerHTML = `<span>Saving Identity...</span>`;
 
-      try {
-        const response = await fetch(`${window.API_BASE || ''}/api/auth/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to dispatch verification code.');
-        }
-
-        currentSignupIdentifier = result.identifier;
-        
-        // Open OTP panel card
+      // Save identifier details and redirect DIRECTLY to onboarding finalization
+      currentSignupIdentifier = identifier;
+      
+      setTimeout(() => {
         mainPanel.classList.add('hidden');
-        otpPanel.classList.remove('hidden');
-
-        const labelSubheader = document.getElementById('otp-subheader-label');
-        if (labelSubheader) {
-          if (signupMode === 'gmail') {
-            labelSubheader.textContent = `ENTER THE 6-DIGIT PASSCODE DISPATCHED TO ${currentSignupIdentifier.toUpperCase()}`;
-          } else {
-            labelSubheader.textContent = `ENTER 6-DIGIT SMS PASSCODE DISPATCHED TO MOBILE ${currentSignupIdentifier}`;
-          }
-        }
-        
-        setTimeout(() => {
-          otpBoxes[0].focus();
-        }, 200);
-
-      } catch (err) {
-        signupAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-        signupAlert.innerHTML = `
-          <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <div>
-            <p class="font-medium">Registration Failed</p>
-            <p class="text-[11px] text-rose-400/80 mt-0.5">${err.message}</p>
-          </div>
-        `;
-        signupAlert.classList.remove('hidden');
-      } finally {
-        signupSubmitBtn.disabled = false;
-        signupSubmitBtn.innerHTML = `
-          <span>Dispatch Verification OTP</span>
-          <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
-        `;
-      }
-    });
-
-    // ==========================================
-    // OTP DIGIT BOXES FOCUS NAVIGATION LISTENERS
-    // ==========================================
-    otpBoxes.forEach((box, index) => {
-      box.addEventListener('input', () => {
-        const val = box.value;
-        if (val && !/^[0-9]$/.test(val)) {
-          box.value = '';
-          return;
-        }
-        if (val && index < otpBoxes.length - 1) {
-          otpBoxes[index + 1].focus();
-        }
-      });
-
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !box.value && index > 0) {
-          otpBoxes[index - 1].focus();
-        }
-      });
-
-      box.addEventListener('paste', (e) => {
-        const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
-        if (/^[0-9]{6}$/.test(pasteData)) {
-          e.preventDefault();
-          pasteData.split('').forEach((char, i) => {
-            if (otpBoxes[i]) otpBoxes[i].value = char;
-          });
-          otpBoxes[5].focus();
-        }
-      });
-    });
-
-    // Handle OTP Verification submission -> switch to choose username + password panel
-    otpVerifyBtn.addEventListener('click', async () => {
-      const code = otpBoxes.map(box => box.value).join('');
-
-      if (code.length < 6) {
-        otpAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-        otpAlert.innerHTML = `<div><p class="font-medium">Verification Incomplete</p><p class="text-[11px] mt-0.5">Please enter the complete 6-digit code.</p></div>`;
-        otpAlert.classList.remove('hidden');
-        return;
-      }
-
-      otpAlert.classList.add('hidden');
-      otpVerifyBtn.disabled = true;
-      otpVerifyBtn.innerHTML = `<span>Verifying OTP...</span>`;
-
-      try {
-        const response = await fetch(`${window.API_BASE || ''}/api/auth/verify-otp`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: currentSignupIdentifier, code })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'OTP verification failed.');
-        }
-
-        // OTP succeeded! Cache payload details and open Choose Username + Password block
-        otpPanel.classList.add('hidden');
         usernamePanel.classList.remove('hidden');
         
-        // Auto pre-fill username block using prefix of their email
+        // Auto pre-fill username block using prefix of their email/phone
         document.getElementById('chosen-username-input').value = currentSignupIdentifier.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
         document.getElementById('chosen-password-input').value = '';
         document.getElementById('username-alert').classList.add('hidden');
         document.getElementById('username-suggestions-container').classList.add('hidden');
-
-      } catch (err) {
-        otpAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-        otpAlert.innerHTML = `<div><p class="font-medium">Verification Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
-        otpAlert.classList.remove('hidden');
-      } finally {
-        otpVerifyBtn.disabled = false;
-        otpVerifyBtn.innerHTML = `Confirm Access Key`;
-      }
+        
+        signupSubmitBtn.disabled = false;
+        signupSubmitBtn.innerHTML = `
+          <span>Continue to Profile Setup</span>
+          <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        `;
+      }, 500);
     });
 
     // ==========================================
