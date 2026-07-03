@@ -29,6 +29,12 @@ export class GitService {
 
   constructor() {
     this.git = simpleGit();
+    try {
+      execSync('git config --global --add safe.directory "*"');
+      console.log('[Git Service] Global safe.directory configured.');
+    } catch (err: any) {
+      console.warn('[Git Service Warning] Failed to configure safe.directory:', err.message);
+    }
   }
 
   // Securely sanitize Git repository URLs

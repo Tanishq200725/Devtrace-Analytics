@@ -18,8 +18,18 @@ const userService = new UserService();
 const emailService = new EmailService();
 
 // State Cache
+const ACTIVE_REPO_FILE = path.join(__dirname, '../active_repo.json');
 let activeRepoPath = '';
 let activeRepoUrl = '';
+
+if (fs.existsSync(ACTIVE_REPO_FILE)) {
+  try {
+    const saved = JSON.parse(fs.readFileSync(ACTIVE_REPO_FILE, 'utf-8'));
+    activeRepoPath = saved.activeRepoPath || '';
+    activeRepoUrl = saved.activeRepoUrl || '';
+    console.log(`[State Restore] Loaded active repository path: ${activeRepoPath}`);
+  } catch (e) {}
+}
 
 // Setup Supabase Client if configured
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -312,6 +322,9 @@ app.post('/api/scan', async (req: Request, res: Response) => {
 
     activeRepoPath = repoPath;
     activeRepoUrl = url;
+    try {
+      fs.writeFileSync(ACTIVE_REPO_FILE, JSON.stringify({ activeRepoPath, activeRepoUrl }));
+    } catch (e) {}
 
     userService.deductToken(identifier);
     const updatedUser = userService.findUser(identifier);
