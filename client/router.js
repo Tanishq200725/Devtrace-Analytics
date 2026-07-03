@@ -17,11 +17,7 @@ const routes = {
 
 // Setup Dynamic Production API base URL
 // Replace with your actual deployed Render Web Service URL
-// Setup Dynamic Production API base URL
-// Replace with your actual deployed Render Web Service URL
-window.API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? ''
-  : 'https://devtrace-api-service.onrender.com';
+window.API_BASE = '';
 
 // Global visual theme controller
 window.setTheme = (themeName) => {
