@@ -54,6 +54,18 @@
           </div>
           <span class="text-lg font-semibold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent group-hover:to-white transition-all duration-300">DevTrace</span>
         </a>
+        
+        <!-- User Name and Pioneer Badge profile indicator -->
+        <div id="header-profile-indicator" class="hidden items-center gap-2 px-2.5 py-1 rounded-xl bg-neutral-900/60 border border-border/40 select-none">
+          <div class="h-5 w-5 rounded-full bg-accent/10 border border-accent/30 text-accent flex items-center justify-center text-[10px] font-bold font-mono" id="header-user-avatar">?</div>
+          <span class="text-xs font-medium text-gray-300 font-mono" id="header-username-label">Guest</span>
+          <div id="header-pioneer-badge" class="hidden">
+            <span class="flex items-center justify-center h-4.5 px-1.5 rounded bg-amber-500/10 border border-amber-500/30 text-[8px] font-extrabold font-mono text-amber-400 uppercase tracking-widest animate-fadeIn" title="Pioneer User (First 100 Accounts)">
+              Pioneer
+            </span>
+          </div>
+        </div>
+
         <button id="admin-dashboard-btn" class="hidden h-7 w-7 rounded bg-neutral-900 border border-border/80 text-gray-500 hover:text-white flex items-center justify-center transition-colors focus:outline-none" onclick="window.openAdminPanel();" title="Owner Admin Control Center">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -405,6 +417,35 @@
           adminBtn.classList.remove('hidden');
         } else {
           adminBtn.classList.add('hidden');
+        }
+      }
+
+      // Update header user profile & badge
+      const profileIndicator = document.getElementById('header-profile-indicator');
+      if (profileIndicator) {
+        if (isLoggedIn) {
+          profileIndicator.classList.remove('hidden');
+          profileIndicator.classList.add('flex');
+          
+          const label = document.getElementById('header-username-label');
+          if (label) label.textContent = auth.username;
+          
+          const avatar = document.getElementById('header-user-avatar');
+          if (avatar) avatar.textContent = auth.username.charAt(0).toUpperCase();
+          
+          const badge = document.getElementById('header-pioneer-badge');
+          if (badge) {
+            if (auth.is_pioneer) {
+              badge.classList.remove('hidden');
+              badge.classList.add('block');
+            } else {
+              badge.classList.add('hidden');
+              badge.classList.remove('block');
+            }
+          }
+        } else {
+          profileIndicator.classList.add('hidden');
+          profileIndicator.classList.remove('flex');
         }
       }
     };
