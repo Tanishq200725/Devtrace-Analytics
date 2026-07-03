@@ -55,14 +55,58 @@
           <span class="text-lg font-semibold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent group-hover:to-white transition-all duration-300">DevTrace</span>
         </a>
         
-        <!-- User Name and Pioneer Badge profile indicator -->
-        <div id="header-profile-indicator" class="hidden items-center gap-2 px-2.5 py-1 rounded-xl bg-neutral-900/60 border border-border/40 select-none">
-          <div class="h-5 w-5 rounded-full bg-accent/10 border border-accent/30 text-accent flex items-center justify-center text-[10px] font-bold font-mono" id="header-user-avatar">?</div>
-          <span class="text-xs font-medium text-gray-300 font-mono" id="header-username-label">Guest</span>
-          <div id="header-pioneer-badge" class="hidden">
-            <span class="flex items-center justify-center h-4.5 px-1.5 rounded bg-amber-500/10 border border-amber-500/30 text-[8px] font-extrabold font-mono text-amber-400 uppercase tracking-widest animate-fadeIn" title="Pioneer User (First 100 Accounts)">
-              Pioneer
-            </span>
+        <!-- Profile Wrap container -->
+        <div class="relative">
+          <!-- User Name and Pioneer Badge profile indicator -->
+          <div id="header-profile-indicator" onclick="window.toggleProfileDropdown(event)" class="hidden items-center gap-2 px-2.5 py-1 rounded-xl bg-neutral-900/60 border border-border/40 hover:border-accent/40 hover:bg-neutral-900 transition-all cursor-pointer select-none">
+            <div class="h-5 w-5 rounded-full bg-accent/10 border border-accent/30 text-accent flex items-center justify-center text-[10px] font-bold font-mono" id="header-user-avatar">?</div>
+            <span class="text-xs font-medium text-gray-300 font-mono" id="header-username-label">Guest</span>
+            <div id="header-pioneer-badge" class="hidden">
+              <!-- Glowing Crown SVG -->
+              <svg class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_4px_rgba(245,158,11,0.9)] animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M2 4l3 4.5L12 3l7 5.5L22 4v13H2V4zm0 15h20v2H2v-2z" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Header User Dropdown Details Card -->
+          <div id="header-profile-dropdown" class="hidden absolute left-0 mt-2 z-50 w-72 rounded-2xl border border-border bg-neutral-950/95 p-5 shadow-2xl glass space-y-4 animate-slideDown">
+            <!-- Card Header (Avatar, Name, Crown) -->
+            <div class="flex items-center gap-3 pb-3 border-b border-border/60">
+              <div class="h-10 w-10 rounded-full bg-accent/10 border border-accent/30 text-accent flex items-center justify-center text-sm font-bold font-mono" id="dropdown-user-avatar">?</div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm font-bold text-white font-mono" id="dropdown-username">Guest</span>
+                  <span id="dropdown-crown-icon" class="hidden text-amber-400 drop-shadow-[0_0_6px_rgba(245,158,11,0.8)] animate-pulse" title="Pioneer Club Member">👑</span>
+                </div>
+                <span class="text-[10px] font-mono text-gray-500 uppercase tracking-wider" id="dropdown-membership-label">Free Member</span>
+              </div>
+            </div>
+
+            <!-- Metrics details list -->
+            <div class="space-y-3 text-xs font-mono text-gray-400">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] text-gray-500 uppercase">Joined Date</span>
+                <span class="text-white text-right" id="dropdown-stat-joined">July 3, 2026</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] text-gray-500 uppercase">Time Active</span>
+                <span class="text-white text-right" id="dropdown-stat-active">1m 20s</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] text-gray-500 uppercase">Audits Completed</span>
+                <span class="text-white text-right" id="dropdown-stat-audits">0 repositories</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] text-gray-500 uppercase">Copilot Queries</span>
+                <span class="text-white text-right" id="dropdown-stat-queries">0 queries</span>
+              </div>
+            </div>
+
+            <!-- Bottom Action -->
+            <button onclick="localStorage.removeItem('devtrace_auth'); window.router.navigate('/auth');" class="w-full py-2 rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 text-rose-400 text-xs font-mono transition-all duration-200 text-center">
+              Sign Out Session
+            </button>
           </div>
         </div>
 
@@ -449,6 +493,74 @@
         }
       }
     };
+
+    let sessionLoginTime = Date.now();
+
+    window.toggleProfileDropdown = (event) => {
+      if (event) event.stopPropagation();
+      const dropdown = document.getElementById('header-profile-dropdown');
+      if (dropdown) {
+        dropdown.classList.toggle('hidden');
+        if (!dropdown.classList.contains('hidden')) {
+          const auth = localStorage.getItem('devtrace_auth') ? JSON.parse(localStorage.getItem('devtrace_auth')) : null;
+          if (auth) {
+            document.getElementById('dropdown-username').textContent = auth.username;
+            document.getElementById('dropdown-user-avatar').textContent = auth.username.charAt(0).toUpperCase();
+            
+            const crown = document.getElementById('dropdown-crown-icon');
+            if (crown) {
+              if (auth.is_pioneer) {
+                crown.classList.remove('hidden');
+              } else {
+                crown.classList.add('hidden');
+              }
+            }
+
+            document.getElementById('dropdown-membership-label').textContent = `${auth.membership.toUpperCase()} MEMBER`;
+
+            const joinedText = document.getElementById('dropdown-stat-joined');
+            if (joinedText) {
+              if (auth.created_at) {
+                const date = new Date(auth.created_at);
+                joinedText.textContent = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+              } else {
+                joinedText.textContent = 'n/a';
+              }
+            }
+
+            const activeText = document.getElementById('dropdown-stat-active');
+            if (activeText) {
+              const diffMs = Date.now() - sessionLoginTime;
+              const diffSec = Math.floor(diffMs / 1000);
+              const min = Math.floor(diffSec / 60);
+              const sec = diffSec % 60;
+              activeText.textContent = `${min}m ${sec}s`;
+            }
+
+            const auditsText = document.getElementById('dropdown-stat-audits');
+            if (auditsText) {
+              const remaining = auth.tokens_remaining ?? 10;
+              const completed = auth.membership === 'free' ? (10 - remaining) : 3;
+              auditsText.textContent = `${completed} repositories`;
+            }
+
+            const queriesText = document.getElementById('dropdown-stat-queries');
+            if (queriesText) {
+              const remaining = auth.chat_queries_remaining ?? 5;
+              const used = auth.membership === 'free' ? (5 - remaining) : 12;
+              queriesText.textContent = `${used} queries`;
+            }
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', () => {
+      const dropdown = document.getElementById('header-profile-dropdown');
+      if (dropdown && !dropdown.classList.contains('hidden')) {
+        dropdown.classList.add('hidden');
+      }
+    });
 
     // Run initial hook checks
     setTimeout(window.onRouteChanged, 300);

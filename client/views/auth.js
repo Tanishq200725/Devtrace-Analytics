@@ -272,6 +272,7 @@ export default {
           tokens_remaining: result.tokens_remaining,
           chat_queries_remaining: result.chat_queries_remaining ?? 5,
           is_pioneer: result.is_pioneer,
+          created_at: result.created_at,
           authorized: true
         }));
 
@@ -346,6 +347,7 @@ export default {
           tokens_remaining: result.tokens_remaining,
           chat_queries_remaining: result.chat_queries_remaining ?? 5,
           is_pioneer: result.is_pioneer,
+          created_at: result.created_at,
           authorized: true
         }));
 
@@ -461,6 +463,7 @@ export default {
           tokens_remaining: result.tokens_remaining,
           chat_queries_remaining: result.chat_queries_remaining ?? 5,
           is_pioneer: result.is_pioneer,
+          created_at: result.created_at,
           authorized: true
         }));
 
