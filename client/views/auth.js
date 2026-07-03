@@ -31,33 +31,86 @@ export default {
             </button>
           </div>
 
-          <!-- Forms -->
-          <form id="auth-form" class="space-y-4">
-            <div>
-              <label for="auth-identifier" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5" id="label-identifier">Username</label>
-              <input type="text" id="auth-identifier" placeholder="e.g. tanishq_dev" required
-                class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
-            </div>
-
-            <div>
-              <div class="flex justify-between items-center mb-1.5">
-                <label for="auth-password" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest">Secure Password</label>
-                <button type="button" onclick="window.switchTab('forgot')" id="link-forgot-pass" class="text-[10px] font-mono text-gray-500 hover:text-white transition-colors">Forgot password?</button>
+          <!-- A. Login Form -->
+          <div id="login-fields-container" class="space-y-4">
+            <form id="auth-form" class="space-y-4">
+              <div>
+                <label for="auth-identifier" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Username / Gmail</label>
+                <input type="text" id="auth-identifier" placeholder="e.g. tanishq_dev" required
+                  class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
               </div>
-              <input type="password" id="auth-password" placeholder="••••••••" required
-                class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
+
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <label for="auth-password" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest">Secure Password</label>
+                  <button type="button" onclick="window.switchTab('forgot')" id="link-forgot-pass" class="text-[10px] font-mono text-gray-500 hover:text-white transition-colors">Forgot password?</button>
+                </div>
+                <input type="password" id="auth-password" placeholder="••••••••" required
+                  class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
+              </div>
+
+              <!-- Dynamic Alert Box -->
+              <div id="auth-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
+
+              <button type="submit" id="auth-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
+                <span>Authorize Engine</span>
+                <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <!-- B. Decoupled Signup Form Shell -->
+          <div id="signup-fields-container" class="hidden space-y-4">
+            <!-- Signup Sub-Tabs (Gmail vs Mobile) -->
+            <div class="flex p-1 rounded-xl bg-neutral-950 border border-border/80 mb-4 select-none">
+              <button id="tab-signup-gmail" onclick="window.switchSignupMode('gmail')" type="button" class="flex-1 py-1.5 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none">
+                Gmail Link
+              </button>
+              <button id="tab-signup-mobile" onclick="window.switchSignupMode('mobile')" type="button" class="flex-1 py-1.5 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none">
+                Mobile Ingest
+              </button>
             </div>
 
-            <!-- Dynamic Alert Box -->
-            <div id="auth-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
+            <form id="signup-form" class="space-y-4">
+              <!-- Gmail Input Group -->
+              <div id="signup-gmail-group" class="space-y-2">
+                <label for="signup-email" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Registered Gmail</label>
+                <input type="email" id="signup-email" placeholder="e.g. user@gmail.com"
+                  class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
+              </div>
 
-            <button type="submit" id="auth-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
-              <span id="btn-text">Authorize Engine</span>
-              <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </button>
-          </form>
+              <!-- Mobile Input Group (Country Code Selector + Phone Number Input) -->
+              <div id="signup-mobile-group" class="hidden space-y-2">
+                <label class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Phone Number Coordinates</label>
+                <div class="flex gap-2">
+                  <!-- Country Codes Dropdown select -->
+                  <select id="signup-country-code" class="bg-neutral-950 border border-border text-xs text-gray-300 font-mono rounded-xl px-3 py-3 focus:border-accent outline-none cursor-pointer">
+                    <option value="+91">IN (+91)</option>
+                    <option value="+92">PK (+92)</option>
+                    <option value="+1">US (+1)</option>
+                    <option value="+44">GB (+44)</option>
+                    <option value="+61">AU (+61)</option>
+                    <option value="+49">DE (+49)</option>
+                    <option value="+81">JP (+81)</option>
+                  </select>
+                  <input type="tel" id="signup-phone" placeholder="e.g. 9837464733"
+                    class="flex-grow bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
+                </div>
+              </div>
+
+              <!-- Dynamic Alert Box -->
+              <div id="signup-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
+
+              <button type="submit" id="signup-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
+                <span>Dispatch Verification OTP</span>
+                <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </button>
+            </form>
+          </div>
         </div>
 
         <!-- ========================================== -->
@@ -71,7 +124,7 @@ export default {
               </svg>
             </div>
             <h2 class="text-2xl font-bold tracking-tight text-white">Verify Access Key</h2>
-            <p class="text-gray-400 text-xs mt-1.5 font-mono">ENTER THE 6-DIGIT PASSCODE SENT TO YOUR CONSOLE</p>
+            <p class="text-gray-400 text-xs mt-1.5 font-mono" id="otp-subheader-label">ENTER THE 6-DIGIT PASSCODE SENT TO YOUR CONSOLE</p>
           </div>
 
           <!-- Dynamic OTP Digit Blocks -->
@@ -98,7 +151,7 @@ export default {
         </div>
 
         <!-- ========================================== -->
-        <!-- PANEL 3: CHOOSE USERNAME POST-SIGNUP       -->
+        <!-- PANEL 3: CHOOSE USERNAME & PASSWORD POST-OTP-->
         <!-- ========================================== -->
         <div id="auth-username-panel" class="hidden space-y-6 animate-fadeIn">
           <div class="text-center">
@@ -107,7 +160,7 @@ export default {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
               </svg>
             </div>
-            <h2 class="text-2xl font-bold tracking-tight text-white">Choose Username</h2>
+            <h2 class="text-2xl font-bold tracking-tight text-white">Create Profile</h2>
             <p class="text-gray-400 text-xs mt-1.5 font-mono">FINALIZE YOUR WORKSPACE PROFILE PATH</p>
           </div>
 
@@ -124,6 +177,12 @@ export default {
                   <!-- Generated dynamically -->
                 </div>
               </div>
+            </div>
+
+            <div>
+              <label for="chosen-password-input" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Create Secure Password</label>
+              <input type="password" id="chosen-password-input" placeholder="••••••••" required minlength="6"
+                class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
             </div>
 
             <div id="username-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
@@ -218,8 +277,8 @@ export default {
   `,
   mount() {
     let activeTab = 'login';
+    let signupMode = 'gmail'; // 'gmail' or 'mobile'
     let currentSignupIdentifier = '';
-    let currentSignupPasswordHash = '';
     let currentRecoveryEmail = '';
 
     const mainPanel = document.getElementById('auth-main-panel');
@@ -228,10 +287,16 @@ export default {
     const forgotPanel = document.getElementById('auth-forgot-panel');
     const recoveryPanel = document.getElementById('auth-recovery-panel');
     
-    const form = document.getElementById('auth-form');
-    const alertBox = document.getElementById('auth-alert');
-    const submitBtn = document.getElementById('auth-submit-btn');
-    const btnText = document.getElementById('btn-text');
+    // Containers for login vs signup
+    const loginFields = document.getElementById('login-fields-container');
+    const signupFields = document.getElementById('signup-fields-container');
+
+    const authForm = document.getElementById('auth-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginAlert = document.getElementById('auth-alert');
+    const signupAlert = document.getElementById('signup-alert');
+    const loginSubmitBtn = document.getElementById('auth-submit-btn');
+    const signupSubmitBtn = document.getElementById('signup-submit-btn');
 
     const otpAlert = document.getElementById('otp-alert');
     const otpVerifyBtn = document.getElementById('otp-verify-btn');
@@ -241,10 +306,45 @@ export default {
     const recoveryVerifyBtn = document.getElementById('recovery-verify-btn');
     const recoveryBoxes = Array.from(document.querySelectorAll('.recovery-box'));
 
-    // Switch between Login and Sign Up tabs and Forgot Password flow
+    // Toggle sub-modes inside Sign Up (Gmail vs Mobile)
+    window.switchSignupMode = (mode) => {
+      signupMode = mode;
+      signupAlert.classList.add('hidden');
+      
+      const tabGmail = document.getElementById('tab-signup-gmail');
+      const tabMobile = document.getElementById('tab-signup-mobile');
+      const gmailGroup = document.getElementById('signup-gmail-group');
+      const mobileGroup = document.getElementById('signup-mobile-group');
+
+      const gmailInput = document.getElementById('signup-email');
+      const phoneInput = document.getElementById('signup-phone');
+
+      if (mode === 'gmail') {
+        tabGmail.className = "flex-1 py-1.5 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
+        tabMobile.className = "flex-1 py-1.5 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
+        gmailGroup.classList.remove('hidden');
+        mobileGroup.classList.add('hidden');
+        
+        gmailInput.required = true;
+        phoneInput.required = false;
+        phoneInput.value = '';
+      } else {
+        tabMobile.className = "flex-1 py-1.5 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
+        tabGmail.className = "flex-1 py-1.5 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
+        mobileGroup.classList.remove('hidden');
+        gmailGroup.classList.add('hidden');
+        
+        phoneInput.required = true;
+        gmailInput.required = false;
+        gmailInput.value = '';
+      }
+    };
+
+    // Switch between Login, Sign Up, and Forgot Password flow tabs
     window.switchTab = (tab) => {
       activeTab = tab;
-      alertBox.classList.add('hidden');
+      loginAlert.classList.add('hidden');
+      signupAlert.classList.add('hidden');
       otpAlert.classList.add('hidden');
       recoveryAlert.classList.add('hidden');
 
@@ -260,20 +360,20 @@ export default {
 
       if (tab === 'login') {
         mainPanel.classList.remove('hidden');
-        tabLogin.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200";
-        tabSignup.className = "flex-1 py-2 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200";
-        document.getElementById('label-identifier').textContent = "Username";
-        document.getElementById('auth-identifier').placeholder = "e.g. tanishq_dev";
-        document.getElementById('link-forgot-pass').classList.remove('hidden');
-        btnText.textContent = "Authorize Engine";
+        loginFields.classList.remove('hidden');
+        signupFields.classList.add('hidden');
+        
+        tabLogin.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
+        tabSignup.className = "flex-1 py-2 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
       } else if (tab === 'signup') {
         mainPanel.classList.remove('hidden');
-        tabSignup.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200";
-        tabLogin.className = "flex-1 py-2 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200";
-        document.getElementById('label-identifier').textContent = "Gmail / Mobile Number";
-        document.getElementById('auth-identifier').placeholder = "e.g. user@gmail.com";
-        document.getElementById('link-forgot-pass').classList.add('hidden');
-        btnText.textContent = "Register & Dispatch OTP";
+        loginFields.classList.add('hidden');
+        signupFields.classList.remove('hidden');
+        
+        tabSignup.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
+        tabLogin.className = "flex-1 py-2 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
+        
+        window.switchSignupMode('gmail'); // default signup mode
       } else if (tab === 'forgot') {
         forgotPanel.classList.remove('hidden');
       } else if (tab === 'recovery') {
@@ -282,137 +382,160 @@ export default {
       }
     };
 
-    // Return to main login/signup screen
+    // Return to main gateway page
     window.backToAuth = () => {
-      window.switchTab('login');
+      window.switchTab('signup');
       otpBoxes.forEach(box => box.value = '');
       recoveryBoxes.forEach(box => box.value = '');
     };
 
-    // Handle Login/Sign Up Form submission
-    form.addEventListener('submit', async (e) => {
+    // FORM 1: LOGIN HANDLER
+    authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
       const identifier = document.getElementById('auth-identifier').value.trim();
       const password = document.getElementById('auth-password').value;
 
-      alertBox.classList.add('hidden');
-      submitBtn.disabled = true;
+      loginAlert.classList.add('hidden');
+      loginSubmitBtn.disabled = true;
+      loginSubmitBtn.innerHTML = `
+        <span class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+        <span>Verifying Credentials...</span>
+      `;
+
+      try {
+        const response = await fetch(`${window.API_BASE || ''}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: identifier, password })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Authentication failed.');
+        }
+
+        loginAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs flex items-start gap-2.5";
+        loginAlert.innerHTML = `
+          <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p class="font-medium">Connection Authorized</p>
+            <p class="text-[11px] text-emerald-500/80 mt-0.5">Welcome back. Loading workspace...</p>
+          </div>
+        `;
+        loginAlert.classList.remove('hidden');
+
+        localStorage.setItem('devtrace_auth', JSON.stringify({
+          identifier: result.identifier,
+          username: result.username,
+          token: result.token,
+          membership: result.membership,
+          tokens_remaining: result.tokens_remaining,
+          chat_queries_remaining: result.chat_queries_remaining ?? 5,
+          authorized: true
+        }));
+
+        setTimeout(() => {
+          window.router.navigate('/dashboard');
+        }, 1200);
+
+      } catch (err) {
+        loginAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
+        loginAlert.innerHTML = `
+          <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            <p class="font-medium">Authentication Failed</p>
+            <p class="text-[11px] text-rose-400/80 mt-0.5">${err.message}</p>
+          </div>
+        `;
+        loginAlert.classList.remove('hidden');
+      } finally {
+        loginSubmitBtn.disabled = false;
+        loginSubmitBtn.innerHTML = `
+          <span>Authorize Engine</span>
+          <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        `;
+      }
+    });
+
+    // FORM 2: SIGNUP SUBMIT HANDLER (OTP Dispatch only, no password yet)
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
       
-      if (activeTab === 'login') {
-        submitBtn.innerHTML = `
-          <span class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-          <span>Verifying Credentials...</span>
-        `;
-
-        try {
-          const response = await fetch(`${window.API_BASE || ''}/api/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: identifier, password })
-          });
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            throw new Error(result.error || 'Authentication failed.');
-          }
-
-          alertBox.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs flex items-start gap-2.5";
-          alertBox.innerHTML = `
-            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <p class="font-medium">Connection Authorized</p>
-              <p class="text-[11px] text-emerald-500/80 mt-0.5">Welcome back. Loading workspace...</p>
-            </div>
-          `;
-          alertBox.classList.remove('hidden');
-
-          localStorage.setItem('devtrace_auth', JSON.stringify({
-            identifier: result.identifier,
-            username: result.username,
-            token: result.token,
-            membership: result.membership,
-            tokens_remaining: result.tokens_remaining,
-            authorized: true
-          }));
-
-          setTimeout(() => {
-            window.router.navigate('/dashboard');
-          }, 1200);
-
-        } catch (err) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = `
-            <span>Authorize Engine</span>
-            <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          `;
-          alertBox.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-          alertBox.innerHTML = `
-            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-              <p class="font-medium">Authentication Failed</p>
-              <p class="text-[11px] text-rose-400/80 mt-0.5">${err.message}</p>
-            </div>
-          `;
-          alertBox.classList.remove('hidden');
-        }
-
+      let identifier = '';
+      if (signupMode === 'gmail') {
+        identifier = document.getElementById('signup-email').value.trim();
       } else {
-        submitBtn.innerHTML = `
-          <span class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-          <span>Dispatching Verification OTP...</span>
-        `;
+        const countryCode = document.getElementById('signup-country-code').value;
+        const phone = document.getElementById('signup-phone').value.trim();
+        identifier = `${countryCode}${phone}`;
+      }
 
-        try {
-          const response = await fetch(`${window.API_BASE || ''}/api/auth/signup`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ identifier, password })
-          });
+      signupAlert.classList.add('hidden');
+      signupSubmitBtn.disabled = true;
+      signupSubmitBtn.innerHTML = `
+        <span class="h-3 w-3 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+        <span>Dispatching Verification OTP...</span>
+      `;
 
-          const result = await response.json();
+      try {
+        const response = await fetch(`${window.API_BASE || ''}/api/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier })
+        });
 
-          if (!response.ok) {
-            throw new Error(result.error || 'Failed to dispatch verification code.');
-          }
+        const result = await response.json();
 
-          currentSignupIdentifier = result.identifier;
-          
-          mainPanel.classList.add('hidden');
-          otpPanel.classList.remove('hidden');
-          
-          setTimeout(() => {
-            otpBoxes[0].focus();
-          }, 200);
-
-        } catch (err) {
-          alertBox.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-          alertBox.innerHTML = `
-            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-              <p class="font-medium">Registration Failed</p>
-              <p class="text-[11px] text-rose-400/80 mt-0.5">${err.message}</p>
-            </div>
-          `;
-          alertBox.classList.remove('hidden');
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = `
-            <span id="btn-text">Register & Dispatch OTP</span>
-            <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          `;
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to dispatch verification code.');
         }
+
+        currentSignupIdentifier = result.identifier;
+        
+        // Open OTP panel card
+        mainPanel.classList.add('hidden');
+        otpPanel.classList.remove('hidden');
+
+        const labelSubheader = document.getElementById('otp-subheader-label');
+        if (labelSubheader) {
+          if (signupMode === 'gmail') {
+            labelSubheader.textContent = `ENTER THE 6-DIGIT PASSCODE DISPATCHED TO ${currentSignupIdentifier.toUpperCase()}`;
+          } else {
+            labelSubheader.textContent = `ENTER 6-DIGIT SMS PASSCODE DISPATCHED TO MOBILE ${currentSignupIdentifier}`;
+          }
+        }
+        
+        setTimeout(() => {
+          otpBoxes[0].focus();
+        }, 200);
+
+      } catch (err) {
+        signupAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
+        signupAlert.innerHTML = `
+          <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            <p class="font-medium">Registration Failed</p>
+            <p class="text-[11px] text-rose-400/80 mt-0.5">${err.message}</p>
+          </div>
+        `;
+        signupAlert.classList.remove('hidden');
+      } finally {
+        signupSubmitBtn.disabled = false;
+        signupSubmitBtn.innerHTML = `
+          <span>Dispatch Verification OTP</span>
+          <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        `;
       }
     });
 
@@ -449,7 +572,7 @@ export default {
       });
     });
 
-    // Handle OTP Verification submission -> switch to choose username panel
+    // Handle OTP Verification submission -> switch to choose username + password panel
     otpVerifyBtn.addEventListener('click', async () => {
       const code = otpBoxes.map(box => box.value).join('');
 
@@ -477,13 +600,13 @@ export default {
           throw new Error(result.error || 'OTP verification failed.');
         }
 
-        // OTP succeeded! Cache payload details and open Choose Username block
-        currentSignupPasswordHash = result.passwordHash;
-        
+        // OTP succeeded! Cache payload details and open Choose Username + Password block
         otpPanel.classList.add('hidden');
         usernamePanel.classList.remove('hidden');
         
+        // Auto pre-fill username block using prefix of their email
         document.getElementById('chosen-username-input').value = currentSignupIdentifier.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
+        document.getElementById('chosen-password-input').value = '';
         document.getElementById('username-alert').classList.add('hidden');
         document.getElementById('username-suggestions-container').classList.add('hidden');
 
@@ -498,7 +621,7 @@ export default {
     });
 
     // ==========================================
-    // CHOOSE USERNAME FORM SUBMISSION
+    // CHOOSE USERNAME & PASSWORD FORM SUBMISSION
     // ==========================================
     const usernameForm = document.getElementById('username-choice-form');
     const usernameAlert = document.getElementById('username-alert');
@@ -514,6 +637,7 @@ export default {
     usernameForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const chosenUsername = document.getElementById('chosen-username-input').value.trim();
+      const chosenPassword = document.getElementById('chosen-password-input').value;
 
       usernameAlert.classList.add('hidden');
       usernameSubmitBtn.disabled = true;
@@ -525,7 +649,7 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             identifier: currentSignupIdentifier,
-            passwordHash: currentSignupPasswordHash,
+            password: chosenPassword,
             username: chosenUsername
           })
         });
@@ -536,7 +660,7 @@ export default {
           // If username is taken, result contains suggestions
           if (result.suggestions && result.suggestions.length > 0) {
             suggestionsList.innerHTML = result.suggestions.map(s => `
-              <button type="button" onclick="window.selectSuggestedUsername('${s}')" class="px-2.5 py-1 rounded bg-neutral-900 border border-border text-[10px] font-mono text-accent hover:border-accent/40 hover:bg-neutral-800 transition-all">
+              <button type="button" onclick="window.selectSuggestedUsername('${s}')" class="px-2.5 py-1 rounded bg-neutral-900 border border-border text-[10px] font-mono text-accent hover:border-accent/40 hover:bg-neutral-800 transition-all focus:outline-none">
                 ${s}
               </button>
             `).join('');
@@ -557,6 +681,7 @@ export default {
           token: result.token,
           membership: result.membership,
           tokens_remaining: result.tokens_remaining,
+          chat_queries_remaining: result.chat_queries_remaining ?? 5,
           authorized: true
         }));
 
@@ -661,11 +786,12 @@ export default {
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || 'Failed to verify recovery code.');
+          throw new Error(result.error || 'Recovery verification failed.');
         }
 
+        // Recovery succeeded! Load session directly
         recoveryAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs flex items-start gap-2.5";
-        recoveryAlert.innerHTML = `<div><p class="font-medium">Recovery Authorized!</p><p class="text-[11px] mt-0.5">Welcome back. Access granted...</p></div>`;
+        recoveryAlert.innerHTML = `<div><p class="font-medium">Identity Confirmed</p><p class="text-[11px] mt-0.5">Logging you in...</p></div>`;
         recoveryAlert.classList.remove('hidden');
 
         localStorage.setItem('devtrace_auth', JSON.stringify({
@@ -674,16 +800,17 @@ export default {
           token: result.token,
           membership: result.membership,
           tokens_remaining: result.tokens_remaining,
+          chat_queries_remaining: result.chat_queries_remaining ?? 5,
           authorized: true
         }));
 
         setTimeout(() => {
           window.router.navigate('/dashboard');
-        }, 1500);
+        }, 1200);
 
       } catch (err) {
         recoveryAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-        recoveryAlert.innerHTML = `<div><p class="font-medium">Recovery Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
+        recoveryAlert.innerHTML = `<div><p class="font-medium">Verification Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
         recoveryAlert.classList.remove('hidden');
       } finally {
         recoveryVerifyBtn.disabled = false;
@@ -691,7 +818,7 @@ export default {
       }
     });
 
-    // Load initial tab setting
+    // Set default initial tab layout view
     window.switchTab('login');
   }
 };

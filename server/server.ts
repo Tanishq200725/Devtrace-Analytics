@@ -59,10 +59,10 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 // 1. Sign Up API: Validate entries and dispatch temporary verification OTP code
 app.post('/api/auth/signup', (req: Request, res: Response) => {
-  const { identifier, password } = req.body;
+  const { identifier } = req.body;
 
-  if (!identifier || !password) {
-    return res.status(400).json({ error: 'Email/Mobile and password are required.' });
+  if (!identifier) {
+    return res.status(400).json({ error: 'Email or mobile number is required.' });
   }
 
   const isEmail = identifier.includes('@');
@@ -78,7 +78,7 @@ app.post('/api/auth/signup', (req: Request, res: Response) => {
   }
 
   try {
-    const otp = userService.initiateSignup(identifier, password);
+    const otp = userService.initiateSignup(identifier);
     return res.status(200).json({
       message: 'Verification OTP code dispatched successfully.',
       identifier
@@ -101,8 +101,7 @@ app.post('/api/auth/verify-otp', (req: Request, res: Response) => {
     console.log(`[Authentication Suite] OTP verified successfully for pending registration: ${identifier}`);
     return res.status(200).json({
       message: 'OTP verified. Proceed to username configuration.',
-      identifier: pending.identifier,
-      passwordHash: pending.passwordHash
+      identifier: pending.identifier
     });
   } catch (err: any) {
     return res.status(400).json({ error: err.message || 'OTP verification failed.' });
@@ -111,15 +110,19 @@ app.post('/api/auth/verify-otp', (req: Request, res: Response) => {
 
 // 3. Choose Username API: Check uniqueness and persist account
 app.post('/api/auth/choose-username', (req: Request, res: Response) => {
-  const { identifier, passwordHash, username } = req.body;
+  const { identifier, password, username } = req.body;
 
-  if (!identifier || !passwordHash || !username) {
-    return res.status(400).json({ error: 'Required signup parameters are missing.' });
+  if (!identifier || !password || !username) {
+    return res.status(400).json({ error: 'Required signup finalization parameters are missing.' });
   }
 
   const cleanUsername = username.trim();
   if (cleanUsername.length < 3) {
     return res.status(400).json({ error: 'Username must be at least 3 characters long.' });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
   }
 
   if (userService.isUsernameTaken(cleanUsername)) {
@@ -131,7 +134,7 @@ app.post('/api/auth/choose-username', (req: Request, res: Response) => {
   }
 
   try {
-    const user = userService.createAccount(identifier, passwordHash, cleanUsername);
+    const user = userService.createAccount(identifier, password, cleanUsername);
     console.log(`[Authentication Suite] New user account finalized: ${user.username} (${user.identifier})`);
     
     return res.status(201).json({

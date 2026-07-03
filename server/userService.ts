@@ -16,7 +16,6 @@ export interface User {
 
 export interface PendingSignup {
   identifier: string;
-  passwordHash: string;
   otp: string;
   expiresAt: number;
 }
@@ -213,7 +212,7 @@ export class UserService {
   }
 
   // Save brand new account details after verification and username selection
-  public createAccount(identifier: string, passwordHash: string, username: string): User {
+  public createAccount(identifier: string, secret: string, username: string): User {
     if (this.isUsernameTaken(username)) {
       throw new Error('Username already taken.');
     }
@@ -229,7 +228,7 @@ export class UserService {
     const newUser: User = {
       identifier,
       username,
-      passwordHash,
+      passwordHash: this.hashPassword(secret),
       verified: true,
       membership: 'free',
       tokens_remaining: 10,
@@ -301,13 +300,11 @@ export class UserService {
   }
 
   // Register temporary OTP code
-  public initiateSignup(identifier: string, secret: string): string {
+  public initiateSignup(identifier: string): string {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const passwordHash = this.hashPassword(secret);
 
     this.pendingSignups.set(identifier.toLowerCase(), {
       identifier,
-      passwordHash,
       otp,
       expiresAt: Date.now() + 5 * 60 * 1000
     });
