@@ -144,7 +144,8 @@ app.post('/api/auth/choose-username', (req: Request, res: Response) => {
       username: user.username,
       membership: user.membership,
       tokens_remaining: user.tokens_remaining,
-      chat_queries_remaining: user.chat_queries_remaining ?? 5
+      chat_queries_remaining: user.chat_queries_remaining ?? 5,
+      is_pioneer: user.is_pioneer
     });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
@@ -180,7 +181,8 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
       username: user.username || user.identifier,
       membership: user.membership,
       tokens_remaining: user.tokens_remaining,
-      chat_queries_remaining: user.chat_queries_remaining ?? 5
+      chat_queries_remaining: user.chat_queries_remaining ?? 5,
+      is_pioneer: user.is_pioneer
     });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
@@ -240,7 +242,8 @@ app.post('/api/auth/verify-recovery', (req: Request, res: Response) => {
     username: user.username || user.identifier,
     membership: user.membership,
     tokens_remaining: user.tokens_remaining,
-    chat_queries_remaining: user.chat_queries_remaining ?? 5
+    chat_queries_remaining: user.chat_queries_remaining ?? 5,
+    is_pioneer: user.is_pioneer
   });
 });
 

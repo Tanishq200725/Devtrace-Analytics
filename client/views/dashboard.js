@@ -5,7 +5,10 @@ export default {
       <!-- Top Section: Welcome & Experience Profile Selector -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-border">
         <div>
-          <h1 class="text-3xl font-bold tracking-tight text-white mb-2">Forensic Registry</h1>
+          <div class="flex items-center gap-3 flex-wrap mb-2">
+            <h1 class="text-3xl font-bold tracking-tight text-white" id="dashboard-welcome-title">Forensic Registry</h1>
+            <div id="pioneer-badge-container"></div>
+          </div>
           <p class="text-gray-400 text-sm">Select your analysis profile to customize telemetry readouts and hint diagnostics.</p>
         </div>
         
@@ -258,6 +261,25 @@ export default {
   mount() {
     let activeLevel = localStorage.getItem('devtrace_experience_level') || 'intermediate';
     let repoCommits = [];
+
+    const authState = localStorage.getItem('devtrace_auth') ? JSON.parse(localStorage.getItem('devtrace_auth')) : null;
+    if (authState && authState.username) {
+      const welcomeTitle = document.getElementById('dashboard-welcome-title');
+      if (welcomeTitle) {
+        welcomeTitle.textContent = `Welcome back, ${authState.username}`;
+      }
+      const badgeContainer = document.getElementById('pioneer-badge-container');
+      if (badgeContainer && authState.is_pioneer) {
+        badgeContainer.innerHTML = `
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold font-mono bg-amber-500/10 border border-amber-500/35 text-amber-400 select-none shadow-md shadow-amber-500/5 uppercase tracking-wider">
+            <svg class="w-3.5 h-3.5 stroke-[2.2] animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499c.176-.708 1.17-.708 1.346 0l2.217 6.828a1 1 0 00.95.69h7.185c.743 0 1.05.952.447 1.353l-5.814 4.225a1 1 0 00-.364 1.118l2.217 6.828c.176.708-.828 1.434-1.431.986l-5.814-4.225a1 1 0 00-1.18 0l-5.814 4.225c-.603.448-1.608-.28-1.431-.986l2.217-6.828a1 1 0 00-.364-1.118L2.98 12.37c-.603-.401-.295-1.353.447-1.353h7.186a1 1 0 00.95-.69l2.217-6.828z" />
+            </svg>
+            Pioneer
+          </span>
+        `;
+      }
+    }
 
     // Switch between URL Ingest Form and GitHub Profile Connector tabs
     window.switchIngestTab = (tab) => {

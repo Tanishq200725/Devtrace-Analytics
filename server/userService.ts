@@ -11,6 +11,7 @@ export interface User {
   membership: 'free' | 'basic' | 'advanced' | 'elite';
   tokens_remaining: number;
   chat_queries_remaining?: number; // AI assistant chat credits
+  is_pioneer?: boolean; // Pioneer Badge identifier for first 100 users
   created_at: string;
 }
 
@@ -233,6 +234,7 @@ export class UserService {
       membership: 'free',
       tokens_remaining: 10,
       chat_queries_remaining: 5,
+      is_pioneer: users.length < 100,
       created_at: new Date().toISOString()
     };
 
