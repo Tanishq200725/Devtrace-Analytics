@@ -7,9 +7,9 @@ export default {
         <div class="absolute -top-24 -left-24 h-48 w-48 rounded-full bg-accent/20 blur-3xl pointer-events-none"></div>
 
         <!-- ========================================== -->
-        <!-- PANEL 1: MAIN GATEWAY (LOGIN & SIGN UP)    -->
+        <!-- MAIN GATEWAY (LOGIN & SIGN UP)             -->
         <!-- ========================================== -->
-        <div id="auth-main-panel" class="space-y-6">
+        <div class="space-y-6">
           <!-- Logo & Header -->
           <div class="text-center relative">
             <div class="h-11 w-11 rounded-xl bg-accent/10 border border-accent/30 text-accent mx-auto flex items-center justify-center mb-3">
@@ -17,8 +17,8 @@ export default {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
               </svg>
             </div>
-            <h2 class="text-2xl font-bold tracking-tight text-white" id="auth-title">Welcome to DevTrace</h2>
-            <p class="text-gray-400 text-xs mt-1.5 font-mono">SECURE GATEWAY ACCESS</p>
+            <h2 class="text-2xl font-bold tracking-tight text-white" id="auth-title">DevTrace Portal</h2>
+            <p class="text-gray-400 text-xs mt-1.5 font-mono">SECURE SYSTEM ACCESS</p>
           </div>
 
           <!-- Tab Selection (Linear styling) -->
@@ -31,28 +31,28 @@ export default {
             </button>
           </div>
 
-          <!-- A. Login Form -->
+          <!-- A. LOGIN FORM -->
           <div id="login-fields-container" class="space-y-4">
-            <form id="auth-form" class="space-y-4">
+            <form id="login-form" class="space-y-4">
               <div>
-                <label for="auth-identifier" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Username / Gmail</label>
-                <input type="text" id="auth-identifier" placeholder="e.g. tanishq_dev" required
+                <label for="login-identifier" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Username / Gmail</label>
+                <input type="text" id="login-identifier" placeholder="e.g. tanishq_dev" required
                   class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
               </div>
 
               <div>
                 <div class="flex justify-between items-center mb-1.5">
-                  <label for="auth-password" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest">Secure Password</label>
+                  <label for="login-password" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest">Password</label>
                   <button type="button" onclick="window.switchTab('forgot')" id="link-forgot-pass" class="text-[10px] font-mono text-gray-500 hover:text-white transition-colors">Forgot password?</button>
                 </div>
-                <input type="password" id="auth-password" placeholder="••••••••" required
+                <input type="password" id="login-password" placeholder="••••••••" required
                   class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
               </div>
 
               <!-- Dynamic Alert Box -->
-              <div id="auth-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
+              <div id="login-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
 
-              <button type="submit" id="auth-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
+              <button type="submit" id="login-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
                 <span>Authorize Engine</span>
                 <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -61,50 +61,40 @@ export default {
             </form>
           </div>
 
-          <!-- B. Decoupled Signup Form Shell -->
+          <!-- B. SIGN UP FORM -->
           <div id="signup-fields-container" class="hidden space-y-4">
-            <!-- Signup Sub-Tabs (Gmail vs Mobile) -->
-            <div class="flex p-1 rounded-xl bg-neutral-950 border border-border/80 mb-4 select-none">
-              <button id="tab-signup-gmail" onclick="window.switchSignupMode('gmail')" type="button" class="flex-1 py-1.5 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none">
-                Gmail Link
-              </button>
-              <button id="tab-signup-mobile" onclick="window.switchSignupMode('mobile')" type="button" class="flex-1 py-1.5 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none">
-                Mobile Ingest
-              </button>
-            </div>
-
             <form id="signup-form" class="space-y-4">
-              <!-- Gmail Input Group -->
-              <div id="signup-gmail-group" class="space-y-2">
-                <label for="signup-email" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Registered Gmail</label>
-                <input type="email" id="signup-email" placeholder="e.g. user@gmail.com"
+              <div>
+                <label for="signup-username" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Choose Username</label>
+                <input type="text" id="signup-username" placeholder="e.g. tanishq_dev" required minlength="3"
+                  class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
+                
+                <!-- Suggestions list -->
+                <div id="username-suggestions-container" class="hidden mt-2 pt-2 border-t border-border/40">
+                  <p class="text-[10px] text-rose-400 font-mono mb-1.5">Username taken. Try these:</p>
+                  <div class="flex flex-wrap gap-2" id="username-suggestions-list">
+                    <!-- Generated dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label for="signup-identifier" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Gmail / Mobile (with country code)</label>
+                <input type="text" id="signup-identifier" placeholder="e.g. user@gmail.com or +919286285985" required
                   class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
               </div>
 
-              <!-- Mobile Input Group (Country Code Selector + Phone Number Input) -->
-              <div id="signup-mobile-group" class="hidden space-y-2">
-                <label class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Phone Number Coordinates</label>
-                <div class="flex gap-2">
-                  <!-- Country Codes Dropdown select -->
-                  <select id="signup-country-code" class="bg-neutral-950 border border-border text-xs text-gray-300 font-mono rounded-xl px-3 py-3 focus:border-accent outline-none cursor-pointer">
-                    <option value="+91">IN (+91)</option>
-                    <option value="+92">PK (+92)</option>
-                    <option value="+1">US (+1)</option>
-                    <option value="+44">GB (+44)</option>
-                    <option value="+61">AU (+61)</option>
-                    <option value="+49">DE (+49)</option>
-                    <option value="+81">JP (+81)</option>
-                  </select>
-                  <input type="tel" id="signup-phone" placeholder="e.g. 9837464733"
-                    class="flex-grow bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
-                </div>
+              <div>
+                <label for="signup-password" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Create Password</label>
+                <input type="password" id="signup-password" placeholder="••••••••" required minlength="6"
+                  class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
               </div>
 
               <!-- Dynamic Alert Box -->
               <div id="signup-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
 
               <button type="submit" id="signup-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
-                <span>Continue to Profile Setup</span>
+                <span>Create Account</span>
                 <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
@@ -114,50 +104,7 @@ export default {
         </div>
 
         <!-- ========================================== -->
-        <!-- PANEL 2: CHOOSE USERNAME & PASSWORD POST-OTP-->
-        <!-- ========================================== -->
-        <div id="auth-username-panel" class="hidden space-y-6 animate-fadeIn">
-          <div class="text-center">
-            <div class="h-11 w-11 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 mx-auto flex items-center justify-center mb-3">
-              <svg class="w-5.5 h-5.5 stroke-[1.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-              </svg>
-            </div>
-            <h2 class="text-2xl font-bold tracking-tight text-white">Create Profile</h2>
-            <p class="text-gray-400 text-xs mt-1.5 font-mono">FINALIZE YOUR WORKSPACE PROFILE PATH</p>
-          </div>
-
-          <form id="username-choice-form" class="space-y-4">
-            <div>
-              <label for="chosen-username-input" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">User Handle</label>
-              <input type="text" id="chosen-username-input" placeholder="e.g. tanishq_trace" required
-                class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
-              
-              <!-- Suggestions list -->
-              <div id="username-suggestions-container" class="hidden mt-3 pt-3 border-t border-border/40">
-                <p class="text-[10px] text-rose-400 font-mono mb-2">Username taken. Available modifications:</p>
-                <div class="flex flex-wrap gap-2" id="username-suggestions-list">
-                  <!-- Generated dynamically -->
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label for="chosen-password-input" class="block text-[10px] font-mono font-medium text-gray-400 uppercase tracking-widest mb-1.5">Create Secure Password</label>
-              <input type="password" id="chosen-password-input" placeholder="••••••••" required minlength="6"
-                class="w-full bg-neutral-950 border border-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 font-mono transition-all duration-200 outline-none focus:border-accent" />
-            </div>
-
-            <div id="username-alert" class="hidden rounded-xl border p-3.5 text-xs flex items-start gap-2.5"></div>
-
-            <button type="submit" id="username-submit-btn" class="w-full py-3 rounded-xl bg-accent text-white font-medium hover:bg-opacity-90 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-accent/25 flex items-center justify-center gap-2">
-              <span>Complete Onboarding</span>
-            </button>
-          </form>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- PANEL 3: FORGOT PASSWORD EMAIL ENTRY       -->
+        <!-- FORGOT PASSWORD PANEL                      -->
         <!-- ========================================== -->
         <div id="auth-forgot-panel" class="hidden space-y-6 animate-fadeIn">
           <div class="text-center">
@@ -192,7 +139,7 @@ export default {
         </div>
 
         <!-- ========================================== -->
-        <!-- PANEL 4: RECOVERY OTP VERIFICATION         -->
+        <!-- RECOVERY OTP PANEL                         -->
         <!-- ========================================== -->
         <div id="auth-recovery-panel" class="hidden space-y-6 animate-fadeIn">
           <div class="text-center">
@@ -228,77 +175,30 @@ export default {
           </div>
         </div>
 
-        <!-- Telemetry footer -->
-        <div class="mt-8 pt-6 border-t border-border/60 text-center">
-          <p class="text-[10px] text-gray-500 leading-normal font-mono">
-            SECURE SESSION SHA-256 ENCRYPTION.<br/>
-            UNAUTHORIZED ACCESS IS STRICTLY RECORDED.
-          </p>
-        </div>
       </div>
     </div>
   `,
   mount() {
     let activeTab = 'login';
-    let signupMode = 'gmail'; // 'gmail' or 'mobile'
-    let currentSignupIdentifier = '';
     let currentRecoveryEmail = '';
 
-    const mainPanel = document.getElementById('auth-main-panel');
-    const usernamePanel = document.getElementById('auth-username-panel');
+    const loginFields = document.getElementById('login-fields-container');
+    const signupFields = document.getElementById('signup-fields-container');
     const forgotPanel = document.getElementById('auth-forgot-panel');
     const recoveryPanel = document.getElementById('auth-recovery-panel');
     
-    // Containers for login vs signup
-    const loginFields = document.getElementById('login-fields-container');
-    const signupFields = document.getElementById('signup-fields-container');
-
-    const authForm = document.getElementById('auth-form');
+    const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
-    const loginAlert = document.getElementById('auth-alert');
+    const loginAlert = document.getElementById('login-alert');
     const signupAlert = document.getElementById('signup-alert');
-    const loginSubmitBtn = document.getElementById('auth-submit-btn');
+    const loginSubmitBtn = document.getElementById('login-submit-btn');
     const signupSubmitBtn = document.getElementById('signup-submit-btn');
 
     const recoveryAlert = document.getElementById('recovery-alert');
     const recoveryVerifyBtn = document.getElementById('recovery-verify-btn');
     const recoveryBoxes = Array.from(document.querySelectorAll('.recovery-box'));
 
-    // Toggle sub-modes inside Sign Up (Gmail vs Mobile)
-    window.switchSignupMode = (mode) => {
-      signupMode = mode;
-      signupAlert.classList.add('hidden');
-      
-      const tabGmail = document.getElementById('tab-signup-gmail');
-      const tabMobile = document.getElementById('tab-signup-mobile');
-      const gmailGroup = document.getElementById('signup-gmail-group');
-      const mobileGroup = document.getElementById('signup-mobile-group');
-
-      const gmailInput = document.getElementById('signup-email');
-      const phoneInput = document.getElementById('signup-phone');
-
-      if (mode === 'gmail') {
-        tabGmail.className = "flex-1 py-1.5 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
-        tabMobile.className = "flex-1 py-1.5 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
-        gmailGroup.classList.remove('hidden');
-        mobileGroup.classList.add('hidden');
-        
-        gmailInput.required = true;
-        phoneInput.required = false;
-        phoneInput.value = '';
-      } else {
-        tabMobile.className = "flex-1 py-1.5 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
-        tabGmail.className = "flex-1 py-1.5 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
-        mobileGroup.classList.remove('hidden');
-        gmailGroup.classList.add('hidden');
-        
-        phoneInput.required = true;
-        gmailInput.required = false;
-        gmailInput.value = '';
-      }
-    };
-
-    // Switch between Login, Sign Up, and Forgot Password flow tabs
+    // Switch Tab Panels
     window.switchTab = (tab) => {
       activeTab = tab;
       loginAlert.classList.add('hidden');
@@ -309,27 +209,21 @@ export default {
       const tabSignup = document.getElementById('tab-signup');
 
       // Hide all panels
-      mainPanel.classList.add('hidden');
-      usernamePanel.classList.add('hidden');
+      loginFields.classList.add('hidden');
+      signupFields.classList.add('hidden');
       forgotPanel.classList.add('hidden');
       recoveryPanel.classList.add('hidden');
 
       if (tab === 'login') {
-        mainPanel.classList.remove('hidden');
         loginFields.classList.remove('hidden');
-        signupFields.classList.add('hidden');
-        
         tabLogin.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
         tabSignup.className = "flex-1 py-2 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
       } else if (tab === 'signup') {
-        mainPanel.classList.remove('hidden');
-        loginFields.classList.add('hidden');
         signupFields.classList.remove('hidden');
-        
         tabSignup.className = "flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-accent text-white shadow border border-accent transition-all duration-200 focus:outline-none";
         tabLogin.className = "flex-1 py-2 text-xs font-mono font-medium rounded-lg text-gray-400 hover:text-white transition-all duration-200 focus:outline-none";
         
-        window.switchSignupMode('gmail'); // default signup mode
+        document.getElementById('username-suggestions-container').classList.add('hidden');
       } else if (tab === 'forgot') {
         forgotPanel.classList.remove('hidden');
       } else if (tab === 'recovery') {
@@ -338,24 +232,20 @@ export default {
       }
     };
 
-    // Return to main gateway page
     window.backToAuth = () => {
-      window.switchTab('signup');
+      window.switchTab('login');
       recoveryBoxes.forEach(box => box.value = '');
     };
 
     // FORM 1: LOGIN HANDLER
-    authForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const identifier = document.getElementById('auth-identifier').value.trim();
-      const password = document.getElementById('auth-password').value;
+      const identifier = document.getElementById('login-identifier').value.trim();
+      const password = document.getElementById('login-password').value;
 
       loginAlert.classList.add('hidden');
       loginSubmitBtn.disabled = true;
-      loginSubmitBtn.innerHTML = `
-        <span class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-        <span>Verifying Credentials...</span>
-      `;
+      loginSubmitBtn.innerHTML = `<span>Verifying...</span>`;
 
       try {
         const response = await fetch(`${window.API_BASE || ''}/api/auth/login`, {
@@ -370,16 +260,8 @@ export default {
           throw new Error(result.error || 'Authentication failed.');
         }
 
-        loginAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs flex items-start gap-2.5";
-        loginAlert.innerHTML = `
-          <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <div>
-            <p class="font-medium">Connection Authorized</p>
-            <p class="text-[11px] text-emerald-500/80 mt-0.5">Welcome back. Loading workspace...</p>
-          </div>
-        `;
+        loginAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs";
+        loginAlert.innerHTML = `<div><p class="font-medium">Connection Authorized</p><p class="text-[11px] mt-0.5">Welcome back. Loading...</p></div>`;
         loginAlert.classList.remove('hidden');
 
         localStorage.setItem('devtrace_auth', JSON.stringify({
@@ -397,110 +279,41 @@ export default {
         }, 1200);
 
       } catch (err) {
-        loginAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-        loginAlert.innerHTML = `
-          <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <div>
-            <p class="font-medium">Authentication Failed</p>
-            <p class="text-[11px] text-rose-400/80 mt-0.5">${err.message}</p>
-          </div>
-        `;
+        loginAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs animate-fadeIn";
+        loginAlert.innerHTML = `<div><p class="font-medium">Authentication Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
         loginAlert.classList.remove('hidden');
       } finally {
         loginSubmitBtn.disabled = false;
-        loginSubmitBtn.innerHTML = `
-          <span>Authorize Engine</span>
-          <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
-        `;
+        loginSubmitBtn.innerHTML = `<span>Authorize Engine</span>`;
       }
     });
 
-    // FORM 2: SIGNUP SUBMIT HANDLER (Direct redirection to Username + Password setup)
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      let identifier = '';
-      if (signupMode === 'gmail') {
-        identifier = document.getElementById('signup-email').value.trim();
-        if (!identifier.includes('@')) {
-          signupAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-          signupAlert.innerHTML = `<div><p class="font-medium">Invalid Email</p><p class="text-[11px] mt-0.5">Please enter a valid Gmail address.</p></div>`;
-          signupAlert.classList.remove('hidden');
-          return;
-        }
-      } else {
-        const countryCode = document.getElementById('signup-country-code').value;
-        const phone = document.getElementById('signup-phone').value.trim();
-        if (!/^[0-9]{10,14}$/.test(phone)) {
-          signupAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-          signupAlert.innerHTML = `<div><p class="font-medium">Invalid Phone</p><p class="text-[11px] mt-0.5">Please enter a valid 10-digit mobile number.</p></div>`;
-          signupAlert.classList.remove('hidden');
-          return;
-        }
-        identifier = `${countryCode}${phone}`;
-      }
-
-      signupAlert.classList.add('hidden');
-      signupSubmitBtn.disabled = true;
-      signupSubmitBtn.innerHTML = `<span>Saving Identity...</span>`;
-
-      // Save identifier details and redirect DIRECTLY to onboarding finalization
-      currentSignupIdentifier = identifier;
-      
-      setTimeout(() => {
-        mainPanel.classList.add('hidden');
-        usernamePanel.classList.remove('hidden');
-        
-        // Auto pre-fill username block using prefix of their email/phone
-        document.getElementById('chosen-username-input').value = currentSignupIdentifier.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
-        document.getElementById('chosen-password-input').value = '';
-        document.getElementById('username-alert').classList.add('hidden');
-        document.getElementById('username-suggestions-container').classList.add('hidden');
-        
-        signupSubmitBtn.disabled = false;
-        signupSubmitBtn.innerHTML = `
-          <span>Continue to Profile Setup</span>
-          <svg class="w-4 h-4 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
-        `;
-      }, 500);
-    });
-
-    // ==========================================
-    // CHOOSE USERNAME & PASSWORD FORM SUBMISSION
-    // ==========================================
-    const usernameForm = document.getElementById('username-choice-form');
-    const usernameAlert = document.getElementById('username-alert');
-    const usernameSubmitBtn = document.getElementById('username-submit-btn');
+    // FORM 2: SIMPLE SIGNUP HANDLER (Submit directly to choose-username)
     const suggestionsContainer = document.getElementById('username-suggestions-container');
     const suggestionsList = document.getElementById('username-suggestions-list');
 
     window.selectSuggestedUsername = (name) => {
-      document.getElementById('chosen-username-input').value = name;
-      usernameForm.requestSubmit(); // Auto trigger submit
+      document.getElementById('signup-username').value = name;
+      signupForm.requestSubmit(); // Auto trigger submit
     };
 
-    usernameForm.addEventListener('submit', async (e) => {
+    signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const chosenUsername = document.getElementById('chosen-username-input').value.trim();
-      const chosenPassword = document.getElementById('chosen-password-input').value;
+      const chosenUsername = document.getElementById('signup-username').value.trim();
+      const identifier = document.getElementById('signup-identifier').value.trim();
+      const password = document.getElementById('signup-password').value;
 
-      usernameAlert.classList.add('hidden');
-      usernameSubmitBtn.disabled = true;
-      usernameSubmitBtn.innerHTML = `<span>Saving Profile...</span>`;
+      signupAlert.classList.add('hidden');
+      signupSubmitBtn.disabled = true;
+      signupSubmitBtn.innerHTML = `<span>Creating Account...</span>`;
 
       try {
         const response = await fetch(`${window.API_BASE || ''}/api/auth/choose-username`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            identifier: currentSignupIdentifier,
-            password: chosenPassword,
+            identifier,
+            password,
             username: chosenUsername
           })
         });
@@ -508,7 +321,6 @@ export default {
         const result = await response.json();
 
         if (!response.ok) {
-          // If username is taken, result contains suggestions
           if (result.suggestions && result.suggestions.length > 0) {
             suggestionsList.innerHTML = result.suggestions.map(s => `
               <button type="button" onclick="window.selectSuggestedUsername('${s}')" class="px-2.5 py-1 rounded bg-neutral-900 border border-border text-[10px] font-mono text-accent hover:border-accent/40 hover:bg-neutral-800 transition-all focus:outline-none">
@@ -517,14 +329,13 @@ export default {
             `).join('');
             suggestionsContainer.classList.remove('hidden');
           }
-          throw new Error(result.error || 'Failed to claim username.');
+          throw new Error(result.error || 'Failed to register account.');
         }
 
-        // Success!
         suggestionsContainer.classList.add('hidden');
-        usernameAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs flex items-start gap-2.5";
-        usernameAlert.innerHTML = `<div><p class="font-medium">Registration Successful!</p><p class="text-[11px] mt-0.5">Account finalized. Loading your workspace...</p></div>`;
-        usernameAlert.classList.remove('hidden');
+        signupAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs";
+        signupAlert.innerHTML = `<div><p class="font-medium">Onboarding Complete!</p><p class="text-[11px] mt-0.5">Account registered. Loading dashboard...</p></div>`;
+        signupAlert.classList.remove('hidden');
 
         localStorage.setItem('devtrace_auth', JSON.stringify({
           identifier: result.identifier,
@@ -541,18 +352,16 @@ export default {
         }, 1500);
 
       } catch (err) {
-        usernameAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
-        usernameAlert.innerHTML = `<div><p class="font-medium">Onboarding Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
-        usernameAlert.classList.remove('hidden');
+        signupAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs animate-fadeIn";
+        signupAlert.innerHTML = `<div><p class="font-medium">Registration Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
+        signupAlert.classList.remove('hidden');
       } finally {
-        usernameSubmitBtn.disabled = false;
-        usernameSubmitBtn.innerHTML = `<span>Complete Onboarding</span>`;
+        signupSubmitBtn.disabled = false;
+        signupSubmitBtn.innerHTML = `<span>Create Account</span>`;
       }
     });
 
-    // ==========================================
-    // FORGOT PASSWORD REQUEST FLOW
-    // ==========================================
+    // FORGOT PASSWORD FLOW
     const forgotForm = document.getElementById('forgot-form');
     const forgotAlert = document.getElementById('forgot-alert');
     const forgotSubmitBtn = document.getElementById('forgot-submit-btn');
@@ -563,7 +372,7 @@ export default {
 
       forgotAlert.classList.add('hidden');
       forgotSubmitBtn.disabled = true;
-      forgotSubmitBtn.innerHTML = `<span>Generating Reset Key...</span>`;
+      forgotSubmitBtn.innerHTML = `<span>Requesting Key...</span>`;
 
       try {
         const response = await fetch(`${window.API_BASE || ''}/api/auth/forgot-password`, {
@@ -582,7 +391,7 @@ export default {
         window.switchTab('recovery');
 
       } catch (err) {
-        forgotAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
+        forgotAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs animate-fadeIn";
         forgotAlert.innerHTML = `<div><p class="font-medium">Request Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
         forgotAlert.classList.remove('hidden');
       } finally {
@@ -591,9 +400,7 @@ export default {
       }
     });
 
-    // ==========================================
-    // RECOVERY CODE VERIFICATION FLOW
-    // ==========================================
+    // RECOVERY OTP VERIFICATION
     recoveryBoxes.forEach((box, index) => {
       box.addEventListener('input', () => {
         const val = box.value;
@@ -617,7 +424,7 @@ export default {
       const code = recoveryBoxes.map(box => box.value).join('');
 
       if (code.length < 6) {
-        recoveryAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
+        recoveryAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs animate-fadeIn";
         recoveryAlert.innerHTML = `<div><p class="font-medium">Verification Incomplete</p><p class="text-[11px] mt-0.5">Please enter the complete 6-digit code.</p></div>`;
         recoveryAlert.classList.remove('hidden');
         return;
@@ -625,7 +432,7 @@ export default {
 
       recoveryAlert.classList.add('hidden');
       recoveryVerifyBtn.disabled = true;
-      recoveryVerifyBtn.innerHTML = `<span>Authorizing Recovery...</span>`;
+      recoveryVerifyBtn.innerHTML = `<span>Verifying...</span>`;
 
       try {
         const response = await fetch(`${window.API_BASE || ''}/api/auth/verify-recovery`, {
@@ -640,9 +447,8 @@ export default {
           throw new Error(result.error || 'Recovery verification failed.');
         }
 
-        // Recovery succeeded! Load session directly
-        recoveryAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs flex items-start gap-2.5";
-        recoveryAlert.innerHTML = `<div><p class="font-medium">Identity Confirmed</p><p class="text-[11px] mt-0.5">Logging you in...</p></div>`;
+        recoveryAlert.className = "rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 p-3.5 text-xs";
+        recoveryAlert.innerHTML = `<div><p class="font-medium">Authorized</p><p class="text-[11px] mt-0.5">Logging you in...</p></div>`;
         recoveryAlert.classList.remove('hidden');
 
         localStorage.setItem('devtrace_auth', JSON.stringify({
@@ -660,7 +466,7 @@ export default {
         }, 1200);
 
       } catch (err) {
-        recoveryAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs flex items-start gap-2.5 animate-fadeIn";
+        recoveryAlert.className = "rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 p-3.5 text-xs animate-fadeIn";
         recoveryAlert.innerHTML = `<div><p class="font-medium">Verification Failed</p><p class="text-[11px] mt-0.5">${err.message}</p></div>`;
         recoveryAlert.classList.remove('hidden');
       } finally {
@@ -669,7 +475,7 @@ export default {
       }
     });
 
-    // Set default initial tab layout view
+    // Set initial view
     window.switchTab('login');
   }
 };
