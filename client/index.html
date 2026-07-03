@@ -61,10 +61,18 @@
           <div id="header-profile-indicator" onclick="window.toggleProfileDropdown(event)" class="hidden items-center gap-2 px-2.5 py-1 rounded-xl bg-neutral-900/60 border border-border/40 hover:border-accent/40 hover:bg-neutral-900 transition-all cursor-pointer select-none">
             <div class="h-5 w-5 rounded-full bg-accent/10 border border-accent/30 text-accent flex items-center justify-center text-[10px] font-bold font-mono" id="header-user-avatar">?</div>
             <span class="text-xs font-medium text-gray-300 font-mono" id="header-username-label">Guest</span>
+            
             <div id="header-pioneer-badge" class="hidden">
               <!-- Glowing Crown SVG -->
               <svg class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_4px_rgba(245,158,11,0.9)] animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M2 4l3 4.5L12 3l7 5.5L22 4v13H2V4zm0 15h20v2H2v-2z" />
+              </svg>
+            </div>
+            
+            <div id="header-owner-badge" class="hidden">
+              <!-- Glowing Owner Shield SVG (Violet/Fuchsia Neon) -->
+              <svg class="w-3.5 h-3.5 text-fuchsia-400 drop-shadow-[0_0_5px_rgba(217,70,239,0.95)] animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
             </div>
           </div>
@@ -78,6 +86,7 @@
                 <div class="flex items-center gap-1.5">
                   <span class="text-sm font-bold text-white font-mono" id="dropdown-username">Guest</span>
                   <span id="dropdown-crown-icon" class="hidden text-amber-400 drop-shadow-[0_0_6px_rgba(245,158,11,0.8)] animate-pulse" title="Pioneer Club Member">👑</span>
+                  <span id="dropdown-owner-icon" class="hidden text-fuchsia-400 drop-shadow-[0_0_6px_rgba(217,70,239,0.95)] animate-pulse" title="Platform Owner">🛡️</span>
                 </div>
                 <span class="text-[10px] font-mono text-gray-500 uppercase tracking-wider" id="dropdown-membership-label">Free Member</span>
               </div>
@@ -477,9 +486,22 @@
           const avatar = document.getElementById('header-user-avatar');
           if (avatar) avatar.textContent = auth.username.charAt(0).toUpperCase();
           
+          const isOwner = auth.username.toLowerCase() === 'tanishq' || auth.identifier.toLowerCase() === 'tanishq';
+          
+          const ownerBadge = document.getElementById('header-owner-badge');
+          if (ownerBadge) {
+            if (isOwner) {
+              ownerBadge.classList.remove('hidden');
+              ownerBadge.classList.add('block');
+            } else {
+              ownerBadge.classList.add('hidden');
+              ownerBadge.classList.remove('block');
+            }
+          }
+
           const badge = document.getElementById('header-pioneer-badge');
           if (badge) {
-            if (auth.is_pioneer) {
+            if (auth.is_pioneer && !isOwner) {
               badge.classList.remove('hidden');
               badge.classList.add('block');
             } else {
@@ -507,16 +529,27 @@
             document.getElementById('dropdown-username').textContent = auth.username;
             document.getElementById('dropdown-user-avatar').textContent = auth.username.charAt(0).toUpperCase();
             
+            const isOwner = auth.username.toLowerCase() === 'tanishq' || auth.identifier.toLowerCase() === 'tanishq';
+
             const crown = document.getElementById('dropdown-crown-icon');
             if (crown) {
-              if (auth.is_pioneer) {
+              if (auth.is_pioneer && !isOwner) {
                 crown.classList.remove('hidden');
               } else {
                 crown.classList.add('hidden');
               }
             }
 
-            document.getElementById('dropdown-membership-label').textContent = `${auth.membership.toUpperCase()} MEMBER`;
+            const ownerIcon = document.getElementById('dropdown-owner-icon');
+            if (ownerIcon) {
+              if (isOwner) {
+                ownerIcon.classList.remove('hidden');
+              } else {
+                ownerIcon.classList.add('hidden');
+              }
+            }
+
+            document.getElementById('dropdown-membership-label').textContent = isOwner ? 'PLATINUM OWNER' : `${auth.membership.toUpperCase()} MEMBER`;
 
             const joinedText = document.getElementById('dropdown-stat-joined');
             if (joinedText) {
@@ -537,18 +570,28 @@
               activeText.textContent = `${min}m ${sec}s`;
             }
 
+            const isOwner = auth.username.toLowerCase() === 'tanishq' || auth.identifier.toLowerCase() === 'tanishq';
+
             const auditsText = document.getElementById('dropdown-stat-audits');
             if (auditsText) {
-              const remaining = auth.tokens_remaining ?? 10;
-              const completed = auth.membership === 'free' ? (10 - remaining) : 3;
-              auditsText.textContent = `${completed} repositories`;
+              if (isOwner) {
+                auditsText.textContent = "Unlimited (Owner)";
+              } else {
+                const remaining = auth.tokens_remaining ?? 10;
+                const completed = auth.membership === 'free' ? (10 - remaining) : 3;
+                auditsText.textContent = `${completed} repositories`;
+              }
             }
 
             const queriesText = document.getElementById('dropdown-stat-queries');
             if (queriesText) {
-              const remaining = auth.chat_queries_remaining ?? 5;
-              const used = auth.membership === 'free' ? (5 - remaining) : 12;
-              queriesText.textContent = `${used} queries`;
+              if (isOwner) {
+                queriesText.textContent = "Unlimited (Owner)";
+              } else {
+                const remaining = auth.chat_queries_remaining ?? 5;
+                const used = auth.membership === 'free' ? (5 - remaining) : 12;
+                queriesText.textContent = `${used} queries`;
+              }
             }
           }
         }
