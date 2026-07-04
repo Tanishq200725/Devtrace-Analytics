@@ -1,6 +1,6 @@
 export default {
   template: `
-    <div class="flex-grow flex h-full w-full overflow-hidden">
+    <div class="flex h-[calc(100vh-4rem)] w-full overflow-hidden">
       <!-- File Tree Sidebar -->
       <aside class="w-80 border-r border-border bg-neutral-950/40 flex flex-col flex-shrink-0">
         <div class="p-4 border-b border-border/80 flex items-center justify-between">
